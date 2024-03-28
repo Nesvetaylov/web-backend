@@ -6,13 +6,12 @@
 <main>
     <header>
 
-
     </header>
 
     <body>
 
         <div class="formacontent">
-            <form action="/" method="POST" id="svyaz">
+            <form action="index.php" method="POST" id="svyaz">
                 <h3>
                     Для обратной связи оставьте свои данные:
                 </h3>
@@ -25,8 +24,7 @@
                 <label>
                     <strong>Номер телефона: </strong>
                     <br>
-                    <input name="phone" type="tel" pattern="\+7\-[0-9]{3}\-[0-9]{3}\-[0-9]{2}\-[0-9]{2}"
-                        placeholder="+7(___)___-__-__" />
+                    <input name="phone" type="tel" pattern="\+7\-[0-9]{3}\-[0-9]{3}\-[0-9]{2}\-[0-9]{2}" placeholder="+7(___)___-__-__" />
                 </label>
                 <br>
                 <label>
@@ -36,9 +34,30 @@
                 </label>
                 <br>
                 <label>
-                    <strong> Дата рождения:</strong>
-                    <br>
-                    <input name="date" value="1996-10-15" type="date" />
+                    <strong>
+                        Укажите дату рождения:
+                    </strong>
+                    <select name="year">
+                        <?php
+                        for ($i = 1899; $i <= 2024; $i++) {
+                            printf('<option value="%d">%d год</option>', $i, $i);
+                        }
+                        ?>
+                    </select><br />
+                    <select name="month">
+                        <?php
+                        for ($i = 1; $i <= 12; $i++) {
+                            printf('<option value="%d">%d месяц</option>', $i, $i);
+                        }
+                        ?>
+                    </select><br />
+                    <select name="day">
+                        <?php
+                        for ($i = 1; $i <= 31; $i++) {
+                            printf('<option value="%d">%d день</option>', $i, $i);
+                        }
+                        ?>
+                    </select>
                 </label>
                 <br>
                 <strong>

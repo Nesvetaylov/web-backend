@@ -15,7 +15,6 @@ $bio = $_POST['biography'];
 $langs = isset($_POST['selections']) ? (array)$_POST['selections'] : [];
 $langs_check = ['lua', 'c', 'c++', 'c#', 'php', 'phyton', 'java', 'js', 'ruby', 'go'];
 
-
 function checkLangs($langs, $langs_check) {
     for ($i = 0; $i < count($langs); $i++) {
         $isTrue = FALSE;

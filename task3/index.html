@@ -1,5 +1,6 @@
 <html>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="formStyle.css">
     <title>task 3</title>
 <head>
 
@@ -19,7 +20,7 @@
                 <label>
                     <strong> Фамилия имя отчество:</strong>
                     <br>
-                    <input name="name" type="text" placeholder="ФИО" />
+                    <input name="fio" type="text" placeholder="ФИО" />
                 </label>
                 <br>
                 <label>
@@ -38,18 +39,18 @@
                 <label>
                     <strong> Дата рождения:</strong>
                     <br>
-                    <input name="date" value="1996-10-15" type="date" />
+                    <input name="birthdate" value="2000-01-01" type="date" />
                 </label>
                 <br>
                 <strong>
                     Пол:
                 </strong>
                 <label>
-                    <input type="radio" name="pol" required value="1">
+                    <input type="radio" name="gender" required value="male">
                     Мужской
                 </label>
                 <label>
-                    <input type="radio" name="pol" required value="2">
+                    <input type="radio" name="gender" required value="female">
                     Женский
                 </label>
                 <br>
@@ -58,19 +59,17 @@
                         Любимый язык программирования:
                     </strong>
                     <br />
-                    <select name="select-field" multiple="multiple">
-                        <option value="1"> Lua</option>
-                        <option value="2"> C</option>
-                        <option value="3"> C++</option>
-                        <option value="4"> C#</option>
-                        <option value="5"> PHP</option>
-                        <option value="6"> Python</option>
-                        <option value="7"> Java</option>
-                        <option value="8"> JavaScript</option>
-                        <option value="9"> Ruby</option>
-                        <option value="10"> Prolog</option>
-                        <option value="11"> Clojure</option>
-                        <option value="12"> Scala</option>
+                    <select name="selections" multiple="multiple" width="400">
+                        <option value="lua"> Lua</option>
+                        <option value="c"> C</option>
+                        <option value="c++"> C++</option>
+                        <option value="c#"> C#</option>
+                        <option value="php"> PHP</option>
+                        <option value="python"> Python</option>
+                        <option value="java"> Java</option>
+                        <option value="js"> JavaScript</option>
+                        <option value="ruby"> Ruby</option>
+                        <option value="go"> Go</option>
                     </select>
                 </label>
                 <br>

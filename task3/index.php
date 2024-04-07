@@ -1,126 +1,111 @@
 <?php
-header('Content-Type: text/html; charset=UTF-8');
+include('SecretData.php');
+$servername = "localhost";
+$username = user;
+$password = pass;
+$dbname = user;
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if (!empty($_GET['save'])) {
-        print('Спасибо, результаты сохранены.');
-    }
-    include('form.php');
-    exit();
-}
-
-$errors = false;
-$fio = $_POST['name'];
+$fio = $phone = $email = $birthdate = $gender = '';
+$fio = $_POST['fio'];
 $phone = $_POST['phone'];
-$mail = $_POST['email'];
-$year = $_POST['year'];
-$month = $_POST['month'];
-$day = $_POST['day'];
-$pol = $_POST['pol'];
-$langg = $_POST['select-field'];
-$biog = $_POST['biography'];
-$V = isset($_POST['check']);
+$email = $_POST['email'];
+$birthdate = $_POST['birthdate'];
+$gender = $_POST['gender'];
+$bio = $_POST['biography'];
+$langs = isset($_POST['selections']) ? (array)$_POST['selections'] : [];
+$langs_check = ['lua', 'c', 'c++', 'c#', 'php', 'phyton', 'java', 'js', 'ruby', 'go'];
 
-if (!preg_match('/^[а-яА-ЯёЁa-zA-Z\s-]{1,150}$/u', $fio)) {
-    print('Заполните имя.<br/>');
-    $errors = true;
-}
 
-if (!preg_match('/^\+[0-9]{11}$/', $phone)) {
-    print('Заполните телефон.<br/>');
-    $errors = true;
-}
-
-if (!preg_match('/^([a-z0-9_-]+(?:[-_.]?[a-z0-9]+)?@[a-z0-9_.-]+(?:\.?[a-z0-9]+)?\.[a-z]{2,5})$/i', $mail)) {
-    print('Заполните почту.<br/>');
-    $errors = true;
-}
-
-if (!is_numeric($year) || !preg_match('/^\d+$/', $year)) {
-    print('Заполните год.<br/>');
-    $errors = true;
-}
-
-if (!is_numeric($month) || $month < 0 || $month > 12) {
-    print('Заполните месяц.<br/>');
-    $errors = true;
-}
-
-if (!is_numeric($day) || $day < 0 || $day > 31) {
-    print('Заполните день.<br/>');
-    $errors = true;
-}
-
-if (!$pol) {
-    print('Выберите пол.<br/>');
-    $errors = true;
-}
-
-$user = 'u67286';
-$pass = '9883045';
-$db = new PDO(
-    'mysql:host=localhost;dbname=u67286',
-    $user,
-    $pass,
-    [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-);
-
-$sth = $db->prepare("SELECT id FROM Lang");
-$sth->execute();
-$langs = $sth->fetchAll();
-
-if (!$langg) {
-    print('Выберите язык программирования.<br/>');
-    $errors = true;
-} else {
-    foreach ($langg as $lang) {
-        $flag = true;
-        foreach ($langs as $index) {
-            if ($index[0] == $lang) {
-                $flag = false;
+function checkLangs($langs, $langs_check) {
+    for ($i = 0; $i < count($langs); $i++) {
+        $isTrue = FALSE;
+        for ($j = 0; $j < count($langs_check); $j++) {
+            if ($langs[$i] === $langs_check[$j]) {
+                $isTrue = TRUE;
                 break;
             }
         }
-        if ($flag) {
-            print('Error: no valid language.<br/>');
-            $errors = true;
-            break;
-        }
+        if ($isTrue === FALSE) return FALSE;
     }
+    return TRUE;
 }
 
-if (!$biog) {
-    print('Заполните биографию.<br/>');
-    $errors = true;
-}
 
-if (!$V) {
-    print('Подвердите согласие.<br/>');
-    $errors = true;
-}
-
-if ($errors) {
+if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+    echo 'This script only works with POST queries';
     exit();
 }
 
-$stmt = $db->prepare("INSERT INTO Person (fio, phone, mail, birthday, pol, biog, V) VALUES (:fio, :phone, :mail, :birthday, :pol, :biog, :V)");
-$birthday = $day . '.' . $month . '.' . $year;
-$stmt->bindParam(':birthday', $birthday);
-$stmt->bindParam(':name', $fio);
-$stmt->bindParam(':phone', $phone);
-$stmt->bindParam(':email', $mail);
-$stmt->bindParam(':pol', $pol);
-$stmt->bindParam(':biography', $biog);
-$stmt->bindParam(':check', $V);
-$stmt->execute();
-$id = $db->lastInsertId();
+$errors = FALSE;
 
-foreach ($langg as $lang) {
-    $stmt = $db->prepare("INSERT INTO person_and_lang (id, id_lang) VALUES (:id,:id_lang)");
-    $stmt->bindParam(':id', $id_u);
-    $stmt->bindParam(':id_lang', $lang);
-    $id_u = $id;
-    $stmt->execute();
+if (empty($_POST['fio']) || !preg_match('/^[а-яА-ЯёЁa-zA-Z\s-]{1,150}$/u', $_POST['fio'])) {
+    $errors = TRUE;
+    print (" mistake in fio ");
 }
 
-header('Location: ?save=1');
+if (empty($phone) || !preg_match('/^[0-9+]+$/', $phone)) {
+    $errors = TRUE;
+    print (" mistake in phone ");
+}
+
+if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors = TRUE;
+    print (" mistake in mail ");
+}
+
+
+$dateObject = DateTime::createFromFormat('Y-m-d', $birthdate);
+if ($dateObject === false || $dateObject->format('Y-m-d') !== $birthdate) {
+    $errors = TRUE;
+    print (" mistake in date ");
+    //добавить проверку на 0
+}
+
+if ($gender != 'male' && $gender != 'female') {
+    $errors = TRUE;
+    print (" mistake in male ");
+}
+
+/*
+if (!checkLangs($langs, $langs_check)) {
+    $errors = TRUE;
+    print (" mistake in check ");
+}*/
+
+if(empty($_POST['check'])){
+    $errors = TRUE;
+    print (" mistake in check ");
+}
+
+if ($errors === TRUE) {
+    echo 'mistake';
+    exit();
+}
+
+try {
+    $conn = new PDO("mysql:host=localhost;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connected successfully ";
+    $sql = "INSERT INTO Request (fio, phone, email, birthdate, gender, biography)
+VALUES ('$fio', '$phone', '$email', '$birthdate', '$gender', '$bio')";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $lastId = $conn->lastInsertId();
+
+    for ($i = 0; $i < count($langs); $i++) {
+        $sql = "SELECT id_lang FROM Proglang_name WHERE name_lang = :langName";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':langName', $langs[$i]);
+        $stmt->execute();
+        $result = $stmt->fetch();
+        $lang_id = $result['id_lang'];
+        $sql = "INSERT INTO Feedback (id, id_lang) VALUES ($lastId, $lang_id)";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+    }
+    echo nl2br("\nNew record created successfully");
+} catch(PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+}
+$conn = null;
+?>

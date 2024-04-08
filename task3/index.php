@@ -1,5 +1,5 @@
 <?php
-include('SecretData.php');
+include('../SecretData.php');
 $servername = "localhost";
 $username = user;
 $password = pass;

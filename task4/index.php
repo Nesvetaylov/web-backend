@@ -176,7 +176,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     echo "Connected successfully ";
     $ins = "INSERT INTO Request (fio, phone, email, birthdate, gender, biography) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $db->prepare($ins);
-    $stmt->execute($_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']);
+    $stmt->execute([$_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
     $userId = $db->lastInsertId();
 
     $lang = "SELECT id FROM Proglang_name WHERE id_lang = ?";

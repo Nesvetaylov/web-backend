@@ -76,8 +76,6 @@
       <label>
           <strong> Биография:</strong>
           <br>
-          <?php print 'из куки: ' . $values['biography'] ?>
-          <br>
           <textarea name="biography" placeholder="Я был писателем, пока не... " 
           <?php if ($errors['biography']) {print 'class="error"';} ?>><?php print $values['biography']; ?></textarea>
       </label>

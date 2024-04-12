@@ -164,13 +164,40 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     setcookie('check_error', '', 100000);
   }
 
+  include('../SecretData.php');
+  $servername = "localhost";
+  $username = user;
+  $password = pass;
+  $dbname = user;
   // Сохранение в БД.
-  // ...
+  try {
+    $db = new PDO("mysql:host=localhost;dbname=$dbname", $username, $password,
+    [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    echo "Connected successfully ";
+    $stmt = $db->prepare("INSERT INTO application SET name = ?");
+    $stmt->execute([$_POST['fio']]);
+    $ins = "INSERT INTO Request (fio, phone, email, birthdate, gender, biography) VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $db->prepare($ins);
+    $stmt->execute($_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']);
+    $userId = $db->lastInsertId();
+
+    $lang = "SELECT id FROM Proglang_name WHERE id_lang = ?";
+    $feed = "INSERT INTO Feedback (id, id_lang) VALUES (?, ?)";
+    $langPrep = $db->prepare($lang);
+    $feedPrep = $db->prepare($feed);
+    foreach ($_POST['selections'] as $selection){
+      $langPrep->execute([$selection]);
+      $langId = $langPrep->fetchColumn();
+      $feedPrep->execute([$userId, $langId]);
+    }
+    echo nl2br("\nNew record created successfully");
+  }
+  catch(PDOException $e){
+    print('Error : ' . $e->getMessage());
+    exit();
+  }
 
   setcookie('save', '1'); // Сохраняем куку с признаком успешного сохранения.
 
   header('Location: index.php'); // Делаем перенаправление.
-}
-if(!$isConfirmed){
-  echo 'kdlakdklajf';
 }

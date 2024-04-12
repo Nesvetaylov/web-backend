@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $errors['gender'] = !empty($_COOKIE['gender_error']);
   $errors['selections'] = !empty($_COOKIE['selections_error']);
   $errors['biography'] = !empty($_COOKIE['biography_error']);
-  $errors['check'] = FALSE;
+  $errors['check'] = !empty($_COOKIE['check_error']);
 
   // Выдаем сообщения об ошибках.
   if ($errors['fio']) {
@@ -60,6 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     setcookie('biography_value', '', 100000);
     $messages[] = '<div class="error">Заполните биографию.</div>';
   }
+  if ($errors['check']) {
+    setcookie('check_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
+    setcookie('check_value', '', 100000);
+    $messages[] = '<div class="error">Укажите согласие на обработку и хранение персональных данных.</div>';
+  }
 
   $values = array(); // Складываем предыдущие значения полей в массив, если есть.
   $values['fio'] = empty($_COOKIE['fio_value']) ? '' : $_COOKIE['fio_value'];
@@ -69,16 +74,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $values['gender'] = empty($_COOKIE['gender_value']) ? '' : $_COOKIE['gender_value'];
   $values['selections'] = empty($_COOKIE['selections_value']) ? array() : unserialize($_COOKIE['selections_value']);
   $values['biography'] = empty($_COOKIE['biography_value']) ? '' : $_COOKIE['biography_value'];
+  $values['check'] = empty($_COOKIE['check_value']) ? '' : $_COOKIE['check_value'];
 
   include('form.php');
 }
 // Иначе, если запрос был методом POST, т.е. нужно проверить данные и сохранить их в XML-файл.
 elseif ($_SERVER["REQUEST_METHOD"] == "POST")
 {
-  $isConfirmed = isset($_POST['check']);
-  if ($isConfirmed) {
-    echo 'Укажите согласие на обработку и хранение персональных данных.';
-  }
   $errors = FALSE; // Проверяем ошибки.
 
   // fio
@@ -138,6 +140,14 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
   else {
     setcookie('selections_value', serialize($_POST['selections']), time() + 30 * 24 * 60 * 60);
   }
+  // check
+  if (!isset($_POST['check'])) {
+    setcookie('check_error', '1', time() + 24 * 60 * 60); 
+    $errors = TRUE;
+  }
+  else {
+    setcookie('check_value', $_POST['check'], time() + 30 * 24 * 60 * 60);
+  }
 
   if ($errors) {
     header('Location: index.php'); // При наличии ошибок перезагружаем страницу и завершаем работу скрипта.
@@ -151,6 +161,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     setcookie('gender_error', '', 100000);
     setcookie('selections_error', '', 100000);
     setcookie('biography_error', '', 100000);
+    setcookie('check_error', '', 100000);
   }
 
   // Сохранение в БД.

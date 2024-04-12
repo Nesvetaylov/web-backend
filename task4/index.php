@@ -173,14 +173,17 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
   try {
     $db = new PDO("mysql:host=localhost;dbname=$dbname", $username, $password,
     [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-    echo "Connected successfully ";
+    echo "Connected successfully<br>";
     $ins = "INSERT INTO Request (fio, phone, email, birthdate, gender, biography) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $db->prepare($ins);
     $stmt->execute([$_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
     $userId = $db->lastInsertId();
+    echo "INSERTED_1 successfully<br>";
 
     $lang = "SELECT id FROM Proglang_name WHERE id_lang = ?";
+    echo "SELECTED_! successfully<br>";
     $feed = "INSERT INTO Feedback (id, id_lang) VALUES (?, ?)";
+    echo "INSERTED_2 successfully<br>";
     $langPrep = $db->prepare($lang);
     $feedPrep = $db->prepare($feed);
     foreach ($_POST['selections'] as $selection){

@@ -174,8 +174,6 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     $db = new PDO("mysql:host=localhost;dbname=$dbname", $username, $password,
     [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     echo "Connected successfully ";
-    $stmt = $db->prepare("INSERT INTO application SET name = ?");
-    $stmt->execute([$_POST['fio']]);
     $ins = "INSERT INTO Request (fio, phone, email, birthdate, gender, biography) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $db->prepare($ins);
     $stmt->execute($_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']);

@@ -90,7 +90,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     setcookie('fio_value', $_POST['fio'], time() + 30 * 24 * 60 * 60); // Сохраняем ранее введенное в форму значение на месяц.
   }
   // phone
-  if (empty($_POST['phone'])) {
+  if (empty($_POST['phone']) || !preg_match('/^[0-9+]+$/', $_POST['phone'])) {
     setcookie('phone_error', '1', time() + 24 * 60 * 60);
     $errors = TRUE;
   }
@@ -98,7 +98,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     setcookie('phone_value', $_POST['phone'], time() + 30 * 24 * 60 * 60);
   }
   // email
-  if (empty($_POST['email'])) {
+  if (empty($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
     setcookie('email_error', '1', time() + 24 * 60 * 60);
     $errors = TRUE;
   }
@@ -114,7 +114,8 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     setcookie('birthdate_value', $_POST['birthdate'], time() + 30 * 24 * 60 * 60);
   }
   // gender
-  if (empty($_POST['gender'])) {
+  $genderCheck = $_POST['gender'] == "male" || $_POST['gender'] == "female";
+  if (empty($_POST['gender']) || !$genderCheck) {
     setcookie('gender_error', '1', time() + 24 * 60 * 60);
     $errors = TRUE;
   }

@@ -19,9 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $errors['phone'] = !empty($_COOKIE['phone_error']);
   $errors['email'] = !empty($_COOKIE['email_error']);
   $errors['birthdate'] = !empty($_COOKIE['birthdate_error']);
+  $errors['gender'] = !empty($_COOKIE['gender_error']);
   $errors['selections'] = !empty($_COOKIE['selections_error']);
   $errors['biography'] = !empty($_COOKIE['biography_error']);
-  $errors['checkbox'] = !empty($_COOKIE['checkbox_error']);
+  $errors['check'] = FALSE;
 
   // Выдаем сообщения об ошибках.
   if ($errors['fio']) {
@@ -44,6 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     setcookie('birthdate_value', '', 100000);
     $messages[] = '<div class="error">Заполните дату рождения.</div>';
   }
+  if ($errors['gender']) {
+    setcookie('gender_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
+    setcookie('gender_value', '', 100000);
+    $messages[] = '<div class="error">Выберете пол.</div>';
+  }
   if ($errors['selections']) {
     setcookie('selections_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('selections_value', '', 100000);
@@ -54,27 +60,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     setcookie('biography_value', '', 100000);
     $messages[] = '<div class="error">Заполните биографию.</div>';
   }
-  if ($errors['checkbox']) {
-    setcookie('checkbox_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
-    setcookie('checkbox_value', '', 100000);
-    $messages[] = '<div class="error">Укажите согласие на обработку и хранение персональных данных.</div>';
-  }
 
   $values = array(); // Складываем предыдущие значения полей в массив, если есть.
   $values['fio'] = empty($_COOKIE['fio_value']) ? '' : $_COOKIE['fio_value'];
   $values['phone'] = empty($_COOKIE['phone_value']) ? '' : $_COOKIE['phone_value'];
   $values['email'] = empty($_COOKIE['email_value']) ? '' : $_COOKIE['email_value'];
   $values['birthdate'] = empty($_COOKIE['birthdate_value']) ? '' : $_COOKIE['birthdate_value'];
-  $values['selections'] = empty($_COOKIE['selections_value']) ? '' : $_COOKIE['selections_value'];
+  $values['gender'] = empty($_COOKIE['gender_value']) ? '' : $_COOKIE['gender_value'];
+  $values['selections'] = empty($_COOKIE['selections_value']) ? '' : unserialize($_COOKIE['selections_value']);
   $values['biography'] = empty($_COOKIE['biography_value']) ? '' : $_COOKIE['biography_value'];
-  $values['checkbox'] = empty($_COOKIE['checkbox_value']) ? '' : $_COOKIE['checkbox_value'];
 
   include('form.php');
 }
 // Иначе, если запрос был методом POST, т.е. нужно проверить данные и сохранить их в XML-файл.
-else 
+else
 {
+  echo 'dasdad';
+  if (!isset($_POST['check'])) {
+    echo 'Укажите согласие на обработку и хранение персональных данных.';
+  }
   $errors = FALSE; // Проверяем ошибки.
+
   // fio
   if (empty($_POST['fio'])) {
     setcookie('fio_error', '1', time() + 24 * 60 * 60); // Выдаем куку на день с флажком об ошибке в поле fio.
@@ -107,6 +113,14 @@ else
   else {
     setcookie('birthdate_value', $_POST['birthdate'], time() + 30 * 24 * 60 * 60);
   }
+  // gender
+  if (empty($_POST['gender'])) {
+    setcookie('gender_error', '1', time() + 24 * 60 * 60);
+    $errors = TRUE;
+  }
+  else {
+    setcookie('gender_value', $_POST['gender'], time() + 30 * 24 * 60 * 60);
+  }
   // biography
   if (empty($_POST['biography'])) {
     setcookie('biography_error', '1', time() + 24 * 60 * 60); 
@@ -115,23 +129,15 @@ else
   else {
     setcookie('biography_value', $_POST['biography'], time() + 30 * 24 * 60 * 60);
   }
-  // checkbox
-  if (empty($_POST['checkbox'])) {
-    setcookie('checkbox_error', '1', time() + 24 * 60 * 60);
-    $errors = TRUE;
-  }
-  else {
-    setcookie('checkbox_value', $_POST['checkbox'], time() + 30 * 24 * 60 * 60);
-  }
   // selections
-  if (empty($_POST['checkbox'])) {
-    setcookie('checkbox_error', '1', time() + 24 * 60 * 60);
+  if (empty($_POST['selections'])) {
+    setcookie('selections_error', '1', time() + 24 * 60 * 60);
     $errors = TRUE;
   }
   else {
-    setcookie('checkbox_value', $_POST['checkbox'], time() + 30 * 24 * 60 * 60);
+    setcookie('selections_value', serialize($_POST['selections']), time() + 30 * 24 * 60 * 60);
   }
-  // TODO: selection, radio
+  // TODO: radio
 
   if ($errors) {
     header('Location: index.php'); // При наличии ошибок перезагружаем страницу и завершаем работу скрипта.
@@ -142,9 +148,9 @@ else
     setcookie('phone_error', '', 100000);
     setcookie('email_error', '', 100000);
     setcookie('birthdate_error', '', 100000);
+    setcookie('gender_error', '', 100000);
     setcookie('selections_error', '', 100000);
     setcookie('biography_error', '', 100000);
-    setcookie('checkbox_error', '', 100000);
   }
 
   // Сохранение в БД.

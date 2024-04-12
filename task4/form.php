@@ -53,29 +53,29 @@
       <br>
       <strong> Пол:</strong>
       <label>
-          <input type="radio" name="gender" required value="male">
+          <input type="radio" name="gender" required value="male" <?php if ($values['gender'] === 'male') { print 'checked'; } ?>>
           Мужской
       </label>
       <label>
-          <input type="radio" name="gender" required value="female">
+          <input type="radio" name="gender" required value="female" <?php if ($values['gender'] === 'female') { print 'checked'; } ?>>
           Женский
       </label>
       <br>
       <label>
           <strong>Любимый язык программирования:</strong>
-          <br />
+          <br>
           <select name="selections[]" multiple="multiple" width="400"
-          <?php if ($errors['selections']) {print 'class="error"';} ?> value="<?php print $values['selections']; ?>">
-              <option value="lua"> Lua</option>
-              <option value="c"> C</option>
-              <option value="c++"> C++</option>
-              <option value="c#"> C#</option>
-              <option value="php"> PHP</option>
-              <option value="python"> Python</option>
-              <option value="java"> Java</option>
-              <option value="js"> JavaScript</option>
-              <option value="ruby"> Ruby</option>
-              <option value="go"> Go</option>
+          <?php if ($errors['selections']) {print 'class="error"';} ?>>
+              <option value="1" <?php if (in_array('1', $values['selections'])) { print 'selected'; } ?>> Lua</option>
+              <option value="2" <?php if (in_array('2', $values['selections'])) { print 'selected'; } ?>> C</option>
+              <option value="3" <?php if (in_array('3', $values['selections'])) { print 'selected'; } ?>> C++</option>
+              <option value="4" <?php if (in_array('4', $values['selections'])) { print 'selected'; } ?>> C#</option>
+              <option value="5" <?php if (in_array('5', $values['selections'])) { print 'selected'; } ?>> PHP</option>
+              <option value="6" <?php if (in_array('6', $values['selections'])) { print 'selected'; } ?>> Python</option>
+              <option value="7" <?php if (in_array('7', $values['selections'])) { print 'selected'; } ?>> Java</option>
+              <option value="8" <?php if (in_array('8', $values['selections'])) { print 'selected'; } ?>> JavaScript</option>
+              <option value="9" <?php if (in_array('9', $values['selections'])) { print 'selected'; } ?>> Ruby</option>
+              <option value="10" <?php if (in_array('10', $values['selections'])) { print 'selected'; } ?>> Go</option>
           </select>
       </label>
       <br>
@@ -88,11 +88,13 @@
       <br>
       <label>
           <input type="checkbox" name="check" 
-          <?php if ($errors['checkbox']) {print 'class="error"';} ?> value="<?php print $values['checkbox']; ?>"/>
+          <?php if ($errors['check']) {print 'class="error"';} ?> value=""/>
           c контрактом ознакомлен(а)
       </label>
       <br>
       <input type="submit" value="Сохранить" />
   </form>
+  <?php 
+  ?>
   </body>
 </html>

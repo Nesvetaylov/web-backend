@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $values['email'] = empty($_COOKIE['email_value']) ? '' : $_COOKIE['email_value'];
   $values['birthdate'] = empty($_COOKIE['birthdate_value']) ? '' : $_COOKIE['birthdate_value'];
   $values['gender'] = empty($_COOKIE['gender_value']) ? '' : $_COOKIE['gender_value'];
-  $values['selections'] = empty($_COOKIE['selections_value']) ? '' : unserialize($_COOKIE['selections_value']);
+  $values['selections'] = empty($_COOKIE['selections_value']) ? array() : unserialize($_COOKIE['selections_value']);
   $values['biography'] = empty($_COOKIE['biography_value']) ? '' : $_COOKIE['biography_value'];
 
   include('form.php');

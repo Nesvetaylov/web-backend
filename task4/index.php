@@ -187,9 +187,11 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     $langPrep = $db->prepare($lang);
     $feedPrep = $db->prepare($feed);
     foreach ($_POST['selections'] as $selection){
+      echo "Open_1 successfully<br>";
       $langPrep->execute([$selection]);
       $langId = $langPrep->fetchColumn();
       $feedPrep->execute([$userId, $langId]);
+      echo "Close_1 successfully<br>";
     }
     echo nl2br("\nNew record created successfully");
   }

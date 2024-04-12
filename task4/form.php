@@ -1,8 +1,8 @@
 <html> 
   <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="formStyle.css">
     <title>task 4</title>
+    <meta charset="UTF-8">
+    <?php echo '<link rel="stylesheet" type="text/css" href="formStyle1.css" media="screen" />'; ?>
   </head>
   <body>
     <?php
@@ -58,8 +58,7 @@
       <label>
           <strong>Любимый язык программирования:</strong>
           <br>
-          <select name="selections[]" multiple="multiple" width="400"
-          <?php if ($errors['selections']) {print 'class="error"';} ?>>
+          <select name="selections[]" multiple="multiple" <?php if ($errors['selections']) {print 'class="error"';} ?>>
               <option value="1" <?php if (in_array('1', $values['selections'])) { print 'selected'; } ?>> Lua</option>
               <option value="2" <?php if (in_array('2', $values['selections'])) { print 'selected'; } ?>> C</option>
               <option value="3" <?php if (in_array('3', $values['selections'])) { print 'selected'; } ?>> C++</option>

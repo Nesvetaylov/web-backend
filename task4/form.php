@@ -1,14 +1,8 @@
-<html>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="formStyle.css">
-  <title>task 4</title>
+<html> 
   <head>
-    <style>
-    /* Сообщения об ошибках и поля с ошибками выводим с красным бордюром. */
-    .error {
-      border: 2px solid red;
-    }
-    </style>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="formStyle.css">
+    <title>task 4</title>
   </head>
   <body>
     <?php
@@ -47,7 +41,7 @@
       <label>
           <strong> Дата рождения:</strong>
           <br>
-          <input name="birthdate" value="" type="date"
+          <input name="birthdate" type="date"
           <?php if ($errors['birthdate']) {print 'class="error"';} ?> value="<?php print $values['birthdate']; ?>" />
       </label>
       <br>
@@ -82,8 +76,10 @@
       <label>
           <strong> Биография:</strong>
           <br>
+          <?php print 'из куки: ' . $values['biography'] ?>
+          <br>
           <textarea name="biography" placeholder="Я был писателем, пока не... " 
-          <?php if ($errors['biography']) {print 'class="error"';} ?> value="<?php print $values['biography']; ?>"></textarea>
+          <?php if ($errors['biography']) {print 'class="error"';} ?>><?php print $values['biography']; ?></textarea>
       </label>
       <br>
       <label>

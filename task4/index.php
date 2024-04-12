@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: text/html; charset=UTF-8');
-
+$isConfirmed = true;
 // В суперглобальном массиве $_SERVER PHP сохраняет некторые заголовки запроса HTTP
 // и другие сведения о клиненте и сервере, например метод текущего запроса $_SERVER['REQUEST_METHOD'].
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
@@ -68,15 +68,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $values['birthdate'] = empty($_COOKIE['birthdate_value']) ? '' : $_COOKIE['birthdate_value'];
   $values['gender'] = empty($_COOKIE['gender_value']) ? '' : $_COOKIE['gender_value'];
   $values['selections'] = empty($_COOKIE['selections_value']) ? '' : unserialize($_COOKIE['selections_value']);
-  $values['biography'] = empty($_COOKIE['biography_value']) ? '' : $_COOKIE['biography_value'];
+  $values['biography'] = empty($_COOKIE['biography_value']) ? '' : unserialize($_COOKIE['biography_value']);
 
   include('form.php');
 }
 // Иначе, если запрос был методом POST, т.е. нужно проверить данные и сохранить их в XML-файл.
-else
+elseif ($_SERVER["REQUEST_METHOD"] == "POST")
 {
-  echo 'dasdad';
-  if (!isset($_POST['check'])) {
+  $isConfirmed = isset($_POST['check']);
+  if ($isConfirmed) {
     echo 'Укажите согласие на обработку и хранение персональных данных.';
   }
   $errors = FALSE; // Проверяем ошибки.
@@ -127,7 +127,7 @@ else
     $errors = TRUE;
   }
   else {
-    setcookie('biography_value', $_POST['biography'], time() + 30 * 24 * 60 * 60);
+    setcookie('biography_value', serialize($_POST['biography']), time() + 30 * 24 * 60 * 60);
   }
   // selections
   if (empty($_POST['selections'])) {
@@ -137,7 +137,6 @@ else
   else {
     setcookie('selections_value', serialize($_POST['selections']), time() + 30 * 24 * 60 * 60);
   }
-  // TODO: radio
 
   if ($errors) {
     header('Location: index.php'); // При наличии ошибок перезагружаем страницу и завершаем работу скрипта.
@@ -159,4 +158,7 @@ else
   setcookie('save', '1'); // Сохраняем куку с признаком успешного сохранения.
 
   header('Location: index.php'); // Делаем перенаправление.
+}
+if(!$isConfirmed){
+  echo 'kdlakdklajf';
 }

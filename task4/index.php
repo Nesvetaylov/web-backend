@@ -178,20 +178,15 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     $stmt = $db->prepare($ins);
     $stmt->execute([$_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
     $userId = $db->lastInsertId();
-    echo "INSERTED_1 successfully<br>";
 
-    $lang = "SELECT id FROM Proglang_name WHERE id_lang = ?";
-    echo "SELECTED_! successfully<br>";
+    $lang = "SELECT id_lang FROM Proglang_name WHERE id_lang = ?";
     $feed = "INSERT INTO Feedback (id, id_lang) VALUES (?, ?)";
-    echo "INSERTED_2 successfully<br>";
     $langPrep = $db->prepare($lang);
     $feedPrep = $db->prepare($feed);
     foreach ($_POST['selections'] as $selection){
-      echo "Open_1 successfully<br>";
       $langPrep->execute([$selection]);
       $langId = $langPrep->fetchColumn();
       $feedPrep->execute([$userId, $langId]);
-      echo "Close_1 successfully<br>";
     }
     echo nl2br("\nNew record created successfully");
   }

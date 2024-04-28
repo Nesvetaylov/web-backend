@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: text/html; charset=UTF-8');
+
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $isStarted = session_start();
 
@@ -195,6 +196,11 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
 
   
   $isStarted = session_start();
+  include('../SecretData.php');
+  $servername = "localhost";
+  $dbUsername = user;
+  $dbPassword = pass;
+  $dbname = user;
   // Проверяем меняются ли ранее сохраненные данные или отправляются новые.
   if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged'])) {
     // TODO: перезаписать данные в БД новыми данными,
@@ -202,7 +208,6 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
   }
   else {
     // Генерируем уникальный логин и пароль.
-    // TODO: сделать механизм генерации, например функциями rand(), uniquid(), md5(), substr().
     $login = substr(uniqid(), 3);
     $pass = rand(100000, 999999);
     // Сохраняем в Cookies.
@@ -214,6 +219,32 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     
     // TODO: Сохранение данных формы, логина и хеш md5() пароля в базу данных.
     // ...
+    try {
+      $db = new PDO("mysql:host=localhost;dbname=$dbname", $dbUsername, $dbPassword,
+      [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+      
+      $insertUser = "INSERT INTO Logins (login, password) VALUES (?, ?)";
+      $request = $db->prepare($insertUser);
+      $request->execute([$login, $pass]);
+      // $ins = "INSERT INTO Request (fio, phone, email, birthdate, gender, biography) VALUES (?, ?, ?, ?, ?, ?)";
+      // $stmt = $db->prepare($ins);
+      // $stmt->execute([$_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
+      // $userId = $db->lastInsertId();
+  
+      // $lang = "SELECT id_lang FROM Proglang_name WHERE id_lang = ?";
+      // $feed = "INSERT INTO Feedback (id, id_lang) VALUES (?, ?)";
+      // $langPrep = $db->prepare($lang);
+      // $feedPrep = $db->prepare($feed);
+      // foreach ($_POST['selections'] as $selection){
+      //   $langPrep->execute([$selection]);
+      //   $langId = $langPrep->fetchColumn();
+      //   $feedPrep->execute([$userId, $langId]);
+      // }
+    }
+    catch(PDOException $e){
+      print('Error : ' . $e->getMessage());
+      exit();
+    }
   }
 
   setcookie('save', '1'); // Сохраняем куку с признаком успешного сохранения.

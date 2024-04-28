@@ -47,11 +47,11 @@
         <br>
         <strong> Пол:</strong>
         <label>
-            <input type="radio" name="gender" required value="male" <?php if ($values['gender'] === 'male') { print 'checked'; } ?>>
+            <input type="radio" name="gender" value="male" <?php if ($values['gender'] === 'male') { print 'checked'; } ?>>
             Мужской
         </label>
         <label>
-            <input type="radio" name="gender" required value="female" <?php if ($values['gender'] === 'female') { print 'checked'; } ?>>
+            <input type="radio" name="gender" value="female" <?php if ($values['gender'] === 'female') { print 'checked'; } ?>>
             Женский
         </label>
         <br>

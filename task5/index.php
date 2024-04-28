@@ -130,9 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     }
     catch(PDOException $e){
       $messages[] = 'Ошибка при загрузке формы из базы данных:<br>' . $e->getMessage();
-      exit();
     }
-
 
     $messages[] = "Выполнен вход с логином: <strong>" . $_SESSION['login'] . '</strong><br>';
     // вывод ссылки для выхода

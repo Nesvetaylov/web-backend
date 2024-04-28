@@ -104,9 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   // Если нет предыдущих ошибок ввода, есть кука сессии, начали сессию и
   // ранее в сессию записан факт успешного логина.
   if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && $_SESSION['hasLogged']) {
-    // TODO: загрузить данные пользователя из БД
-    // и заполнить переменную $values,
-    // предварительно санитизовав.
     include('../SecretData.php');
     $servername = "localhost";
     $dbUsername = user;
@@ -140,17 +137,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     catch(PDOException $e){
       $messages[] = 'Ошибка при загрузке формы из базы данных:<br>' . $e->getMessage();
     }
-
     $messages[] = "Выполнен вход с логином: <strong>" . $_SESSION['login'] . '</strong><br>';
-    // вывод ссылки для выхода
-    $messages[] = '<a href="login.php?exit=1">Выход</a>';
+    $messages[] = '<a href="login.php?exit=1">Выход</a>'; // вывод ссылки для выхода
   }
+  // если не вошел, то вывести ссылку для входа
   elseif($isStarted && !empty($_COOKIE[session_name()])) {
-    // если не вошел, то вывести ссылку для входа
     $messages[] = '<a href="login.php">Войти</a> для изменения данных ранее отправленных форм<br>.';
   }
-  $messages[] = "er: " . $hasErrors . '<br>';
-
   include('form.php');
 }
 // Иначе, если запрос был методом POST, т.е. нужно проверить данные и сохранить их в XML-файл.
@@ -251,6 +244,34 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
   if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged'])) {
     // TODO: перезаписать данные в БД новыми данными,
     // кроме логина и пароля.
+    try {
+      $login = $_SESSION['login'];
+      $select = "SELECT id FROM Logins WHERE login = $login";
+      $result = $db->query($select);
+      $row = $result->fetch();
+      $formID = $row['id'];
+
+      $updateForm = "UPDATE Forms SET fio = ?, phone = ?, email = ?, birthdate = ?, gender = ?, biography = ? WHERE id = $formID";
+      $formReq = $db->prepare($updateForm);
+      $formReq->execute([$_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
+
+      $deleteLangs = "DELETE FROM LangsInForm WHERE id = $formID";
+      $delReq = $db->query($deleteLangs);
+  
+      $lang = "SELECT id_lang FROM ProgLangs WHERE id_lang = ?";
+      $feed = "INSERT INTO LangsInForm (id, id_lang) VALUES (?, ?)";
+      $langPrep = $db->prepare($lang);
+      $feedPrep = $db->prepare($feed);
+      foreach ($_POST['selections'] as $selection){
+        $langPrep->execute([$selection]);
+        $langID = $langPrep->fetchColumn();
+        $feedPrep->execute([$formID, $langID]);
+      }
+    }
+    catch(PDOException $e){
+      setcookie('DBERROR', 'Error : ' . $e->getMessage());
+      exit();
+    }
   }
   else {
     // Генерируем уникальный логин и пароль.
@@ -271,7 +292,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
       $newForm = "INSERT INTO Forms (login, fio, phone, email, birthdate, gender, biography) VALUES (?, ?, ?, ?, ?, ?, ?)";
       $formReq = $db->prepare($newForm);
       $formReq->execute([$login, $_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
-      $userId = $db->lastInsertId();
+      $userID = $db->lastInsertId();
   
       $lang = "SELECT id_lang FROM ProgLangs WHERE id_lang = ?";
       $feed = "INSERT INTO LangsInForm (id, id_lang) VALUES (?, ?)";
@@ -279,8 +300,8 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
       $feedPrep = $db->prepare($feed);
       foreach ($_POST['selections'] as $selection){
         $langPrep->execute([$selection]);
-        $langId = $langPrep->fetchColumn();
-        $feedPrep->execute([$userId, $langId]);
+        $langID = $langPrep->fetchColumn();
+        $feedPrep->execute([$userID, $langID]);
       }
     }
     catch(PDOException $e){

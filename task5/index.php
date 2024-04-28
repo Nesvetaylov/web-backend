@@ -245,11 +245,11 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     // TODO: перезаписать данные в БД новыми данными,
     // кроме логина и пароля.
     try {
+      echo '0';
       $login = $_SESSION['login'];
       $select = "SELECT id FROM Logins WHERE login = $login";
       $result = $db->query($select);
-      $row = $result->fetch();
-      $formID = $row['id'];
+      $formID = $result->fetch();
       echo '1';
       $updateForm = "UPDATE Forms SET fio = ?, phone = ?, email = ?, birthdate = ?, gender = ?, biography = ? WHERE id = $formID";
       $formReq = $db->prepare($updateForm);

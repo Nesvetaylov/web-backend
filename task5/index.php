@@ -225,7 +225,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
       
       $insertUser = "INSERT INTO Logins (login, password) VALUES (?, ?)";
       $request = $db->prepare($insertUser);
-      $request->execute([$login, $pass]);
+      $request->execute([$login, md5($pass)]);
       // $ins = "INSERT INTO Request (fio, phone, email, birthdate, gender, biography) VALUES (?, ?, ?, ?, ?, ?)";
       // $stmt = $db->prepare($ins);
       // $stmt->execute([$_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);

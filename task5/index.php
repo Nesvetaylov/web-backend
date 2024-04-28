@@ -281,8 +281,6 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     // Сохраняем в Cookies.
     setcookie('login', $login);
     setcookie('pass', $pass);
-    $_SESSION['login'] = $login;
-    $_SESSION['pass'] = $pass;
     $_SESSION['hasLogged'] = false;
     
     try {      

@@ -247,15 +247,15 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     try {
       echo '0';
       $login = $_SESSION['login'];
-      $select = "SELECT f.id FROM Forms f, Logins l WHERE l.login = $login AND f.login = l.login";
+      $select = "SELECT f.id FROM Forms f, Logins l WHERE l.login = '$login' AND f.login = l.login";
       $result = $db->query($select);
       $formID = $result->fetch();
       echo '1(' . $formID;
-      $updateForm = "UPDATE Forms SET fio = ?, phone = ?, email = ?, birthdate = ?, gender = ?, biography = ? WHERE id = $formID";
+      $updateForm = "UPDATE Forms SET fio = ?, phone = ?, email = ?, birthdate = ?, gender = ?, biography = ? WHERE id = '$formID'";
       $formReq = $db->prepare($updateForm);
       $formReq->execute([$_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
       echo ')2';
-      $deleteLangs = "DELETE FROM LangsInForm WHERE id = $formID";
+      $deleteLangs = "DELETE FROM LangsInForm WHERE id = '$formID'";
       $delReq = $db->query($deleteLangs);
       echo '3';
       $lang = "SELECT id_lang FROM ProgLangs WHERE id_lang = ?";

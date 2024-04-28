@@ -249,7 +249,8 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
       $login = $_SESSION['login'];
       $select = "SELECT f.id FROM Forms f, Logins l WHERE l.login = '$login' AND f.login = l.login";
       $result = $db->query($select);
-      $formID = $result->fetch();
+      $row = $result->fetch();
+      $formID = $row['id'];
       echo '1(' . $formID;
       $updateForm = "UPDATE Forms SET fio = ?, phone = ?, email = ?, birthdate = ?, gender = ?, biography = ? WHERE id = '$formID'";
       $formReq = $db->prepare($updateForm);

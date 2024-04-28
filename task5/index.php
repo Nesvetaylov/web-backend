@@ -19,15 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $messages[] = 'Спасибо, результаты сохранены.<br>';
     // Если в куках есть пароль, то выводим сообщение.
     if (!empty($_COOKIE['pass'])) {
-      $messages[] = sprintf('Вы можете <a href="login.php">войти</a> с логином <strong>%s</strong>
+      $messages[] = sprintf('Вы можете войти с логином <strong>%s</strong>
         и паролем <strong>%s</strong> для изменения данных.<br>',
         strip_tags($_COOKIE['login']),
         strip_tags($_COOKIE['pass']));
     }
-    setcookie('save', '', time() -1000);
-    setcookie('login', '', time() -1000);
-    setcookie('pass', '', time() -1000);
-    setcookie('DBERROR', '', time() -1000);
+    setcookie('save', '', time() - 3600);
+    setcookie('login', '', time() - 3600);
+    setcookie('pass', '', time() - 3600);
   }
 
   // Складываем признак ошибок в массив.
@@ -95,18 +94,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $values['biography'] = empty($_COOKIE['biography_value']) ? '' : $_COOKIE['biography_value'];
   $values['check'] = empty($_COOKIE['check_value']) ? '' : $_COOKIE['check_value'];
 
-    // Если нет предыдущих ошибок ввода, есть кука сессии, начали сессию и
+  // Если нет предыдущих ошибок ввода, есть кука сессии, начали сессию и
   // ранее в сессию записан факт успешного логина.
   $messages[] = "Сессия: " . $_COOKIE[session_name()] . "<br>";
   if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && $_SESSION['hasLogged']) {
     // TODO: загрузить данные пользователя из БД
     // и заполнить переменную $values,
     // предварительно санитизовав.
-    $messages[] = "Вход с логином: " . $_SESSION['login'] . ", паролем: " . $_SESSION['pass'] . '<br>';
+    $messages[] = "Выполнен вход с логином: <strong>" . $_SESSION['login'] . '</strong><br>';
     $messages[] = '<a href="login.php?exit=1">Выход</a>';
   }
   else {
-    $messages[] = "Вы не вошли для изменения данных в форме<br>";
+    $messages[] = '<a href="login.php">Войти</a> для изменения данных ранее отправленных форм<br>';
   }
 
   include('form.php');

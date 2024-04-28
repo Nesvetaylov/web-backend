@@ -1,19 +1,30 @@
 <?php
 header('Content-Type: text/html; charset=UTF-8');
-$isConfirmed = true;
-// В суперглобальном массиве $_SERVER PHP сохраняет некторые заголовки запроса HTTP
-// и другие сведения о клиненте и сервере, например метод текущего запроса $_SERVER['REQUEST_METHOD'].
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-  $messages = array();   // Массив для временного хранения сообщений пользователю.
+  $isStarted = session_start();
 
+  $messages = array();   // Массив для временного хранения сообщений пользователю.
   // В суперглобальном массиве $_COOKIE PHP хранит все имена и значения куки текущего запроса.
   // Выдаем сообщение об успешном сохранении.
   if (!empty($_COOKIE['save'])) {
-    setcookie('save', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
-    $messages[] = 'Спасибо, результаты сохранены.'; // Если есть параметр save, то выводим сообщение пользователю.
+    // Удаляем куку, указывая время устаревания в прошлом.
+    
+    // Выводим сообщение пользователю.
+    $messages[] = 'Спасибо, результаты сохранены.<br>';
+    // Если в куках есть пароль, то выводим сообщение.
+    if (!empty($_COOKIE['pass'])) {
+      $messages[] = sprintf('Вы можете <a href="login.php">войти</a> с логином <strong>%s</strong>
+        и паролем <strong>%s</strong> для изменения данных.<br>',
+        strip_tags($_COOKIE['login']),
+        strip_tags($_COOKIE['pass']));
+    }
+    setcookie('save', '', time() -1000);
+    setcookie('login', '', time() -1000);
+    setcookie('pass', '', time() -1000);
   }
 
   // Складываем признак ошибок в массив.
+  $hasErrors = false;
   $errors = array();
   $errors['fio'] = !empty($_COOKIE['fio_error']);
   $errors['phone'] = !empty($_COOKIE['phone_error']);
@@ -29,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     setcookie('fio_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('fio_value', '', 100000);
     $messages[] = '<div class="error">Заполните имя.</div>';
+    $hasErrors = true;
   }
   if ($errors['phone']) {
     setcookie('phone_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
@@ -75,6 +87,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $values['selections'] = empty($_COOKIE['selections_value']) ? array() : unserialize($_COOKIE['selections_value']);
   $values['biography'] = empty($_COOKIE['biography_value']) ? '' : $_COOKIE['biography_value'];
   $values['check'] = empty($_COOKIE['check_value']) ? '' : $_COOKIE['check_value'];
+
+    // Если нет предыдущих ошибок ввода, есть кука сессии, начали сессию и
+  // ранее в сессию записан факт успешного логина.
+  $messages[] = "Сессия: " . $_COOKIE[session_name()] . "<br>";
+  if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && $_SESSION['hasLogged']) {
+    // TODO: загрузить данные пользователя из БД
+    // и заполнить переменную $values,
+    // предварительно санитизовав.
+    $hesh1 = md5($_SESSION['login']);
+    $hesh2 = md5($_SESSION['pass']);
+    $messages[] = "Вход с логином: " . $_SESSION['login'] . ", паролем: " . $_SESSION['pass'] . '<br>';
+    $messages[] = $hesh1 . " - " . strlen($hesh1) . "<br>" . $hesh2 . " - " . strlen($hesh2) . '<br>';
+    $messages[] = '<a href="login.php?exit=1">Выйти из учетной записи</a>';
+  }
+  else {
+    $messages[] = "Ошибка входа<br>";
+  }
 
   include('form.php');
 }
@@ -164,35 +193,27 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     setcookie('check_error', '', 100000);
   }
 
-  include('../SecretData.php');
-  $servername = "localhost";
-  $username = user;
-  $password = pass;
-  $dbname = user;
-  // Сохранение в БД.
-  try {
-    $db = new PDO("mysql:host=localhost;dbname=$dbname", $username, $password,
-    [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-    echo "Connected successfully<br>";
-    $ins = "INSERT INTO Request (fio, phone, email, birthdate, gender, biography) VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $db->prepare($ins);
-    $stmt->execute([$_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
-    $userId = $db->lastInsertId();
-
-    $lang = "SELECT id_lang FROM Proglang_name WHERE id_lang = ?";
-    $feed = "INSERT INTO Feedback (id, id_lang) VALUES (?, ?)";
-    $langPrep = $db->prepare($lang);
-    $feedPrep = $db->prepare($feed);
-    foreach ($_POST['selections'] as $selection){
-      $langPrep->execute([$selection]);
-      $langId = $langPrep->fetchColumn();
-      $feedPrep->execute([$userId, $langId]);
-    }
-    echo nl2br("\nNew record created successfully");
+  
+  $isStarted = session_start();
+  // Проверяем меняются ли ранее сохраненные данные или отправляются новые.
+  if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged'])) {
+    // TODO: перезаписать данные в БД новыми данными,
+    // кроме логина и пароля.
   }
-  catch(PDOException $e){
-    print('Error : ' . $e->getMessage());
-    exit();
+  else {
+    // Генерируем уникальный логин и пароль.
+    // TODO: сделать механизм генерации, например функциями rand(), uniquid(), md5(), substr().
+    $login = substr(uniqid(), 3);
+    $pass = rand(100000, 999999);
+    // Сохраняем в Cookies.
+    setcookie('login', $login);
+    setcookie('pass', $pass);
+    $_SESSION['login'] = $login;
+    $_SESSION['pass'] = $pass;
+    $_SESSION['hasLogged'] = false;
+    
+    // TODO: Сохранение данных формы, логина и хеш md5() пароля в базу данных.
+    // ...
   }
 
   setcookie('save', '1'); // Сохраняем куку с признаком успешного сохранения.

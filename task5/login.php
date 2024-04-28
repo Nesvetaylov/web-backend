@@ -17,7 +17,12 @@ header('Content-Type: text/html; charset=UTF-8');
 $session_started = false;
 if ($_COOKIE[session_name()] && session_start()) {
   $session_started = true;
-  if (!empty($_SESSION['login'])) {
+  if (!empty($_GET['exit'])){
+    session_destroy();
+    header('Location: index.php');
+    exit();
+  }
+  if (!empty($_SESSION['hasLogged']) && $_SESSION['hasLogged'] = true) {
     // Если есть логин в сессии, то пользователь уже авторизован.
     // TODO: Сделать выход (окончание сессии вызовом session_destroy()
     //при нажатии на кнопку Выход).
@@ -49,9 +54,11 @@ else {
     session_start();
   }
   // Если все ок, то авторизуем пользователя.
-  $_SESSION['login'] = $_POST['login'];
-  // Записываем ID пользователя.
-  $_SESSION['uid'] = 123;
+  //$_SESSION['login'] = $_POST['login'];
+  if ($_POST['login'] == $_SESSION['login'] && $_POST['pass'] == $_SESSION['pass']) {
+    $_SESSION['hasLogged'] = true;
+  }
+  
 
   // Делаем перенаправление.
   header('Location: ./');

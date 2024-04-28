@@ -51,7 +51,7 @@ else {
       session_start();
     }
     while($row = $result->fetch()){
-      if ($_POST['login'] == $row['login'] && $_POST['pass'] == $row['password']) {
+      if ($_POST['login'] == $row['login'] && md5($_POST['pass']) == $row['password']) {
         $loginFlag = true;
         break;
       }

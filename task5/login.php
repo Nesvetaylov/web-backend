@@ -66,9 +66,13 @@ else {
   // Если все ок, то авторизуем пользователя.
   if ($loginFlag) {
     $_SESSION['hasLogged'] = true;
+    $_SESSION['login'] = $_POST['login'];
+    $_SESSION['pass'] = $_POST['pass'];
   }
   else {
     $_SESSION['hasLogged'] = false;
+    $_SESSION['login'] = '';
+    $_SESSION['pass'] = '';
     setcookie('AUTHERROR', 'Ошибка входа (Неверный логин или пароль)');
   }
   // Делаем перенаправление.

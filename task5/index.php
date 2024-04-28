@@ -52,36 +52,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     setcookie('phone_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('phone_value', '', 100000); 
     $messages[] = '<div class="error">Введите номер телефона.</div>';
+    $hasErrors = true;
   }
   if ($errors['email']) {
     setcookie('email_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('email_value', '', 100000);
     $messages[] = '<div class="error">Заполните email.</div>';
+    $hasErrors = true;
   }
   if ($errors['birthdate']) {
     setcookie('birthdate_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('birthdate_value', '', 100000);
     $messages[] = '<div class="error">Заполните дату рождения.</div>';
+    $hasErrors = true;
   }
   if ($errors['gender']) {
     setcookie('gender_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('gender_value', '', 100000);
     $messages[] = '<div class="error">Выберете пол.</div>';
+    $hasErrors = true;
   }
   if ($errors['selections']) {
     setcookie('selections_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('selections_value', '', 100000);
     $messages[] = '<div class="error">Выберете интересующие вас языки программирования.</div>';
+    $hasErrors = true;
   }
   if ($errors['biography']) {
     setcookie('biography_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('biography_value', '', 100000);
     $messages[] = '<div class="error">Заполните биографию.</div>';
+    $hasErrors = true;
   }
   if ($errors['check']) {
     setcookie('check_error', '', 100000); // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('check_value', '', 100000);
     $messages[] = '<div class="error">Укажите согласие на обработку и хранение персональных данных.</div>';
+    $hasErrors = true;
   }
 
   $values = array(); // Складываем предыдущие значения полей в массив, если есть.
@@ -96,16 +103,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
   // Если нет предыдущих ошибок ввода, есть кука сессии, начали сессию и
   // ранее в сессию записан факт успешного логина.
-  $messages[] = "Сессия: " . $_COOKIE[session_name()] . "<br>";
-  if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && $_SESSION['hasLogged']) {
+  if (!$hasErrors && $isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && $_SESSION['hasLogged']) {
     // TODO: загрузить данные пользователя из БД
     // и заполнить переменную $values,
     // предварительно санитизовав.
+    include('../SecretData.php');
+    $servername = "localhost";
+    $dbUsername = user;
+    $dbPassword = pass;
+    $dbname = user;
+    $db = new PDO("mysql:host=localhost;dbname=$dbname", $dbUsername, $dbPassword,
+    [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    try {      
+      $select = "SELECT * FROM Forms WHERE login = ?";
+      $result = $db->prepare($select);
+      $result->execute([$_SESSION['login']]);
+      $row = $result->fetch();
+      $values['fio'] = $row['fio'];
+      $values['phone'] = $row['phone'];
+      $values['email'] = $row['email'];
+      $values['birthdate'] = $row['birthdate'];
+      $values['gender'] = $row['gender'];
+      $values['biography'] = $row['biography'];
+
+      // достать выбранные языки
+    }
+    catch(PDOException $e){
+      $messages[] = 'Ошибка при загрузке формы из базы данных:<br>' . $e->getMessage();
+      exit();
+    }
+
+
     $messages[] = "Выполнен вход с логином: <strong>" . $_SESSION['login'] . '</strong><br>';
+    // вывод ссылки для выхода
     $messages[] = '<a href="login.php?exit=1">Выход</a>';
   }
-  else {
-    $messages[] = '<a href="login.php">Войти</a> для изменения данных ранее отправленных форм<br>';
+  elseif(!$hasErrors && $isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && !$_SESSION['hasLogged']) {
+    // если не вошел, то вывести ссылку для входа
+    $messages[] = '<a href="login.php">Войти</a> для изменения данных ранее отправленных форм<br>.';
   }
 
   include('form.php');
@@ -196,7 +231,6 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     setcookie('check_error', '', 100000);
   }
 
-  
   $isStarted = session_start();
   include('../SecretData.php');
   $servername = "localhost";

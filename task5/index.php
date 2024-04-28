@@ -250,14 +250,14 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
       $result = $db->query($select);
       $row = $result->fetch();
       $formID = $row['id'];
-
+      echo '1';
       $updateForm = "UPDATE Forms SET fio = ?, phone = ?, email = ?, birthdate = ?, gender = ?, biography = ? WHERE id = $formID";
       $formReq = $db->prepare($updateForm);
       $formReq->execute([$_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
-
+      echo '2';
       $deleteLangs = "DELETE FROM LangsInForm WHERE id = $formID";
       $delReq = $db->query($deleteLangs);
-  
+      echo '3';
       $lang = "SELECT id_lang FROM ProgLangs WHERE id_lang = ?";
       $feed = "INSERT INTO LangsInForm (id, id_lang) VALUES (?, ?)";
       $langPrep = $db->prepare($lang);
@@ -267,6 +267,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
         $langID = $langPrep->fetchColumn();
         $feedPrep->execute([$formID, $langID]);
       }
+      echo '4';
     }
     catch(PDOException $e){
       setcookie('DBERROR', 'Error : ' . $e->getMessage());

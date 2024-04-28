@@ -68,6 +68,7 @@ else {
     $_SESSION['hasLogged'] = true;
   }
   else {
+    $_SESSION['hasLogged'] = false;
     setcookie('AUTHERROR', 'Ошибка входа (Неверный логин или пароль)');
   }
   // Делаем перенаправление.

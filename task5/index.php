@@ -103,8 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
   // Если нет предыдущих ошибок ввода, есть кука сессии, начали сессию и
   // ранее в сессию записан факт успешного логина.
-  $messages[] = 'Session: ' . $_COOKIE[session_name()] . '<br>' . 
-  'hl: ' . !empty($_SESSION['hasLogged']) . '<br>' . 'hasLog: ' . $_SESSION['hasLogged'] . '<br>';
   if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && $_SESSION['hasLogged']) {
     // TODO: загрузить данные пользователя из БД
     // и заполнить переменную $values,
@@ -114,31 +112,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $dbUsername = user;
     $dbPassword = pass;
     $dbname = user;
-    // $db = new PDO("mysql:host=localhost;dbname=$dbname", $dbUsername, $dbPassword,
-    // [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-    // try {      
-    //   $select = "SELECT * FROM Forms WHERE login = ?";
-    //   $result = $db->prepare($select);
-    //   $result->execute([$_SESSION['login']]);
-    //   $row = $result->fetch();
-    //   $values['fio'] = $row['fio'];
-    //   $values['phone'] = $row['phone'];
-    //   $values['email'] = $row['email'];
-    //   $values['birthdate'] = $row['birthdate'];
-    //   $values['gender'] = $row['gender'];
-    //   $values['biography'] = $row['biography'];
+    $db = new PDO("mysql:host=localhost;dbname=$dbname", $dbUsername, $dbPassword,
+    [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    try {      
+      $select = "SELECT * FROM Forms WHERE login = ?";
+      $result = $db->prepare($select);
+      $result->execute([$_SESSION['login']]);
+      $row = $result->fetch();
+      $values['fio'] = $row['fio'];
+      $values['phone'] = $row['phone'];
+      $values['email'] = $row['email'];
+      $values['birthdate'] = $row['birthdate'];
+      $values['gender'] = $row['gender'];
+      $values['biography'] = $row['biography'];
 
-    //   // достать выбранные языки
-    // }
-    // catch(PDOException $e){
-    //   $messages[] = 'Ошибка при загрузке формы из базы данных:<br>' . $e->getMessage();
-    // }
+      // достать выбранные языки
+    }
+    catch(PDOException $e){
+      $messages[] = 'Ошибка при загрузке формы из базы данных:<br>' . $e->getMessage();
+    }
 
     $messages[] = "Выполнен вход с логином: <strong>" . $_SESSION['login'] . '</strong><br>';
     // вывод ссылки для выхода
     $messages[] = '<a href="login.php?exit=1">Выход</a>';
   }
-  elseif($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && !$_SESSION['hasLogged']) {
+  elseif($isStarted && !empty($_COOKIE[session_name()])) {
     // если не вошел, то вывести ссылку для входа
     $messages[] = '<a href="login.php">Войти</a> для изменения данных ранее отправленных форм<br>.';
   }

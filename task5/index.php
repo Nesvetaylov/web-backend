@@ -5,11 +5,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $isStarted = session_start();
 
   $messages = array();   // Массив для временного хранения сообщений пользователю.
-  // В суперглобальном массиве $_COOKIE PHP хранит все имена и значения куки текущего запроса.
-  // Выдаем сообщение об успешном сохранении.
+  // Выдаем сообщения о различных ошибках
   if (!empty($_COOKIE['DBERROR'])) {
     $messages[] = $_COOKIE['DBERROR'] . '<br><br>';
+    setcookie('DBERROR', '', time() - 3600);
   }
+  if (!empty($_COOKIE['AUTHERROR'])) {
+    $messages[] = $_COOKIE['AUTHERROR'] . '<br><br>';
+    setcookie('AUTHERROR', '', time() - 3600);
+  }
+  // Выдаем сообщение об успешном сохранении.
   if (!empty($_COOKIE['save'])) {
     $messages[] = 'Спасибо, результаты сохранены.<br>';
     // Если в куках есть пароль, то выводим сообщение.
@@ -98,10 +103,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // и заполнить переменную $values,
     // предварительно санитизовав.
     $messages[] = "Вход с логином: " . $_SESSION['login'] . ", паролем: " . $_SESSION['pass'] . '<br>';
-    $messages[] = '<a href="login.php?exit=1">войти</a>';
+    $messages[] = '<a href="login.php?exit=1">Выход</a>';
   }
   else {
-    $messages[] = "Ошибка входа<br>";
+    $messages[] = "Вы не вошли для изменения данных в форме<br>";
   }
 
   include('form.php');
@@ -199,6 +204,8 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
   $dbUsername = user;
   $dbPassword = pass;
   $dbname = user;
+  $db = new PDO("mysql:host=localhost;dbname=$dbname", $dbUsername, $dbPassword,
+  [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
   // Проверяем меняются ли ранее сохраненные данные или отправляются новые.
   if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged'])) {
     // TODO: перезаписать данные в БД новыми данными,
@@ -215,12 +222,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     $_SESSION['pass'] = $pass;
     $_SESSION['hasLogged'] = false;
     
-    // TODO: Сохранение данных формы, логина и хеш md5() пароля в базу данных.
-    // ...
-    try {
-      $db = new PDO("mysql:host=localhost;dbname=$dbname", $dbUsername, $dbPassword,
-      [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-      
+    try {      
       $newUser = "INSERT INTO Logins (login, password) VALUES (?, ?)";
       $request = $db->prepare($newUser);
       $request->execute([$login, md5($pass)]); // сохранил логин и хеш пароля

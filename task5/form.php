@@ -1,6 +1,6 @@
 <html> 
     <head>
-        <title>task 4</title>
+        <title>task 5</title>
         <meta charset="UTF-8">
         <?php echo '<link rel="stylesheet" type="text/css" href="formStyle1.css" media="screen" />'; ?>
         </head>
@@ -81,7 +81,7 @@
         <br>
         <label>
             <div <?php if ($errors['check']) {print 'class="error"';} ?>>
-            <input type="checkbox" name="check" value=""/>c контрактом ознакомлен(а)
+                <input type="checkbox" name="check" value=""/>c контрактом ознакомлен(а)
             </div>
         </label>
         <br>

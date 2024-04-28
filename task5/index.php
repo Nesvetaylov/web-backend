@@ -7,10 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $messages = array();   // Массив для временного хранения сообщений пользователю.
   // В суперглобальном массиве $_COOKIE PHP хранит все имена и значения куки текущего запроса.
   // Выдаем сообщение об успешном сохранении.
+  if (!empty($_COOKIE['DBERROR'])) {
+    $messages[] = $_COOKIE['DBERROR'] . '<br><br>';
+  }
   if (!empty($_COOKIE['save'])) {
-    // Удаляем куку, указывая время устаревания в прошлом.
-    
-    // Выводим сообщение пользователю.
     $messages[] = 'Спасибо, результаты сохранены.<br>';
     // Если в куках есть пароль, то выводим сообщение.
     if (!empty($_COOKIE['pass'])) {
@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     setcookie('save', '', time() -1000);
     setcookie('login', '', time() -1000);
     setcookie('pass', '', time() -1000);
+    setcookie('DBERROR', '', time() -1000);
   }
 
   // Складываем признак ошибок в массив.
@@ -96,11 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // TODO: загрузить данные пользователя из БД
     // и заполнить переменную $values,
     // предварительно санитизовав.
-    $hesh1 = md5($_SESSION['login']);
-    $hesh2 = md5($_SESSION['pass']);
     $messages[] = "Вход с логином: " . $_SESSION['login'] . ", паролем: " . $_SESSION['pass'] . '<br>';
-    $messages[] = $hesh1 . " - " . strlen($hesh1) . "<br>" . $hesh2 . " - " . strlen($hesh2) . '<br>';
-    $messages[] = '<a href="login.php?exit=1">Выйти из учетной записи</a>';
   }
   else {
     $messages[] = "Ошибка входа<br>";
@@ -223,26 +220,27 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
       $db = new PDO("mysql:host=localhost;dbname=$dbname", $dbUsername, $dbPassword,
       [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
       
-      $insertUser = "INSERT INTO Logins (login, password) VALUES (?, ?)";
-      $request = $db->prepare($insertUser);
-      $request->execute([$login, md5($pass)]);
-      // $ins = "INSERT INTO Request (fio, phone, email, birthdate, gender, biography) VALUES (?, ?, ?, ?, ?, ?)";
-      // $stmt = $db->prepare($ins);
-      // $stmt->execute([$_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
-      // $userId = $db->lastInsertId();
+      $newUser = "INSERT INTO Logins (login, password) VALUES (?, ?)";
+      $request = $db->prepare($newUser);
+      $request->execute([$login, md5($pass)]); // сохранил логин и хеш пароля
+
+      $newForm = "INSERT INTO Forms (login, fio, phone, email, birthdate, gender, biography) VALUES (?, ?, ?, ?, ?, ?, ?)";
+      $formReq = $db->prepare($newForm);
+      $formReq->execute([$login, $_POST['fio'], $_POST['phone'], $_POST['email'], $_POST['birthdate'], $_POST['gender'], $_POST['biography']]);
+      $userId = $db->lastInsertId();
   
-      // $lang = "SELECT id_lang FROM Proglang_name WHERE id_lang = ?";
-      // $feed = "INSERT INTO Feedback (id, id_lang) VALUES (?, ?)";
-      // $langPrep = $db->prepare($lang);
-      // $feedPrep = $db->prepare($feed);
-      // foreach ($_POST['selections'] as $selection){
-      //   $langPrep->execute([$selection]);
-      //   $langId = $langPrep->fetchColumn();
-      //   $feedPrep->execute([$userId, $langId]);
-      // }
+      $lang = "SELECT id_lang FROM ProgLangs WHERE id_lang = ?";
+      $feed = "INSERT INTO LangsInForm (id, id_lang) VALUES (?, ?)";
+      $langPrep = $db->prepare($lang);
+      $feedPrep = $db->prepare($feed);
+      foreach ($_POST['selections'] as $selection){
+        $langPrep->execute([$selection]);
+        $langId = $langPrep->fetchColumn();
+        $feedPrep->execute([$userId, $langId]);
+      }
     }
     catch(PDOException $e){
-      print('Error : ' . $e->getMessage());
+      setcookie('DBERROR', 'Error : ' . $e->getMessage());
       exit();
     }
   }

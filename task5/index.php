@@ -119,14 +119,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       $result = $db->prepare($select);
       $result->execute([$_SESSION['login']]);
       $row = $result->fetch();
+      // получаю значения формы из таблицы бд
+      $formID = $row['id'];
       $values['fio'] = $row['fio'];
       $values['phone'] = $row['phone'];
       $values['email'] = $row['email'];
       $values['birthdate'] = $row['birthdate'];
       $values['gender'] = $row['gender'];
       $values['biography'] = $row['biography'];
-
-      // достать выбранные языки
+      // достаю выбранные языки программирования
+      $select = "SELECT id_lang FROM LangsInForm WHERE id = ?";
+      $result = $db->prepare($select);
+      $result->execute([$formID]);
+      $list = array();
+      while($row = $result->fetch()){
+        $list[] = $row['id_lang'];
+      }
+      $values['selections'] = $list;
     }
     catch(PDOException $e){
       $messages[] = 'Ошибка при загрузке формы из базы данных:<br>' . $e->getMessage();

@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
   // Если нет предыдущих ошибок ввода, есть кука сессии, начали сессию и
   // ранее в сессию записан факт успешного логина.
-  if (!$hasErrors && $isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && $_SESSION['hasLogged']) {
+  if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && $_SESSION['hasLogged']) {
     // TODO: загрузить данные пользователя из БД
     // и заполнить переменную $values,
     // предварительно санитизовав.
@@ -136,10 +136,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // вывод ссылки для выхода
     $messages[] = '<a href="login.php?exit=1">Выход</a>';
   }
-  elseif(!$hasErrors && $isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && !$_SESSION['hasLogged']) {
+  elseif($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && !$_SESSION['hasLogged']) {
     // если не вошел, то вывести ссылку для входа
     $messages[] = '<a href="login.php">Войти</a> для изменения данных ранее отправленных форм<br>.';
   }
+  $messages[] = "er: " . $hasErrors . '<br>';
 
   include('form.php');
 }

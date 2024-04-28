@@ -103,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
   // Если нет предыдущих ошибок ввода, есть кука сессии, начали сессию и
   // ранее в сессию записан факт успешного логина.
+  $messages[] = $_COOKIE[session_name()] . '<br>';
   if ($isStarted && !empty($_COOKIE[session_name()]) && !empty($_SESSION['hasLogged']) && $_SESSION['hasLogged']) {
     // TODO: загрузить данные пользователя из БД
     // и заполнить переменную $values,

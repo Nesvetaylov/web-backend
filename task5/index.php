@@ -247,7 +247,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
     try {
       echo '0';
       $login = $_SESSION['login'];
-      $select = "SELECT id FROM Logins WHERE login = $login";
+      $select = "SELECT f.id FROM Forms f, Logins l WHERE l.login = $login AND f.login = l.login";
       $result = $db->query($select);
       $formID = $result->fetch();
       echo '1';

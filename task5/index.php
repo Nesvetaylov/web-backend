@@ -98,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // и заполнить переменную $values,
     // предварительно санитизовав.
     $messages[] = "Вход с логином: " . $_SESSION['login'] . ", паролем: " . $_SESSION['pass'] . '<br>';
+    $messages[] = '<a href="login.php?exit=1">войти</a>';
   }
   else {
     $messages[] = "Ошибка входа<br>";

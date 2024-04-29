@@ -17,10 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     if (!empty($_COOKIE['save'])) {
         $messages[] = 'Спасибо, результаты сохранены.';
         if (!empty($_COOKIE['pass'])) {
-            $messages[] = sprintf('Вы можете <a href="login.php?log=%s&pas=%s"> войти </a> с логином <strong>%s</strong>
+            $messages[] = sprintf('Вы можете войти с логином <strong>%s</strong>
         и паролем <strong>%s</strong> для изменения данных.<br>',
-                strip_tags($_COOKIE['login']),
-                strip_tags($_COOKIE['pass']),
                 strip_tags($_COOKIE['login']),
                 strip_tags($_COOKIE['pass']));
         }
@@ -28,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         setcookie('login', '', 100000);
         setcookie('pass', '', 100000);
     }
-
 
     $errors = array();
     $errors['fio'] = !empty($_COOKIE['fio_error']);
@@ -98,19 +95,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if (!empty($_COOKIE[session_name()]) &&
         $started_session && !empty($_SESSION['hasentered'])) {
-        $messages[]='Вход с логином: '. $_SESSION['login'];
+        $messages[]='Вход с логином: '. $_SESSION['login'] . '<br>';
         // TODO: загрузить данные пользователя из БД
         // и заполнить переменную $values,
         // предварительно санитизовав.
-        printf('Вход с логином %s, uid %d', $_SESSION['login'], $_SESSION['uid']);
+        $messages[] = '<a href ="login.php?enter=1"> Выйти </a>';
     }
     else{
-        $messages[]='невыолнен вход';
+        $messages[]='<a href="login.php?">Войти</a><br>';
     }
-
-    $messages[] = '<a href ="login.php?enter=1"> Enter (выход) </a>';
-
-
 
     include('form.php');
     exit();

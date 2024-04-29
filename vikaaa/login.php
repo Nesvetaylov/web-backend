@@ -122,23 +122,17 @@ else
     
 
     $loggined=false;
-    //$hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $hashed_password = md5($_POST['password']);
-    echo $_POST['password'] . " = " . $hashed_password . "<br>";
     try {
-        echo "db<br>";
-        //$pdo = new PDO($dsn, $username, $password, $options);
+
         $select = "SELECT * FROM users";
         $issue = $db->query($select);
         while ($row = $issue->fetch()){
-            echo "user: " . $row['username'] . " | " . $_POST['username'] . "<br>";
-            echo "pass: "  . strcmp($row['password'], $hashed_password) . "<br>";
             if($_POST['username'] == $row['username'] && $hashed_password == $row['password']) {
                 $loggined = true;
                 break;
             }
         }
-        echo "end<br>";
     } catch (PDOException $e) {
         setcookie('DBERROR', 'Error2 : ' . $e->getMessage());
     }
@@ -146,7 +140,6 @@ else
         session_start();
     }
     setcookie('logMASS',$_POST['username'].' '.$_POST['password'] . ' isLogged: ' . $loggined .'<br>');
-    echo "$loggined<br>";
     if($loggined){
         $_SESSION['login'] = $_POST['username'];
         $_SESSION['password'] = $_POST['password'];

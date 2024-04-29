@@ -140,7 +140,7 @@ else
                 break;
             }
         }
-        echo "end<br>"
+        echo "end<br>";
     } catch (PDOException $e) {
         setcookie('DBERROR', 'Error2 : ' . $e->getMessage());
     }

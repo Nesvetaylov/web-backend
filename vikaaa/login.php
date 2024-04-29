@@ -132,7 +132,7 @@ else
         $issue = $db->query($select);
         while ($row = $issue->fetch()){
             echo "user: " . $row['username'] . " | " . $_POST['username'] . "<br>";
-            echo "pass: "  . ($row['password'] == $hashed_password) . "<br>";
+            echo "pass: "  . $row['password'] . " | " . $hashed_password . "<br>";
         }
         // while ($row = $issue->fetch()) {
         //     $r = array();

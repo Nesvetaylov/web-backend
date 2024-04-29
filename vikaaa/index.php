@@ -18,7 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         setcookie('flag', '', time() - 3600);
     }
     if (!empty($_COOKIE['kkk'])) {
-        $messages[] = 'how? '. unserialize($_COOKIE['kkk']);
+        $arr = unserialize($_COOKIE['kkk']);
+        foreach($arr as $a){
+            $messages[] = ' - ' . $a . '<br>';
+        }
         setcookie('kkk', '', time() - 3600);
     }
 

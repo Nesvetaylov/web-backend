@@ -21,8 +21,11 @@ if ($_COOKIE[session_name()] && session_start()) {
     }
 }
 
-// echo " Логин: " . $_GET['log'];
-// echo " Пароль: " . $_GET['pas'];
+if(!empty($_GET['log'])){
+    echo " Логин: " . $_GET['log'];
+    echo " Пароль: " . $_GET['pas'];
+}
+
 echo " Новый пользователь успешно добавлен.<br>";
 
 //$hashed_password = password_hash($_GET['pas'], PASSWORD_DEFAULT);

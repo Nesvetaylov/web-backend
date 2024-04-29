@@ -122,17 +122,18 @@ else
         //$pdo = new PDO($dsn, $username, $password, $options);
         $select = "SELECT * FROM users";
         $issue = $db->query($select);
-        $kkk = $issue->fetchAll();
-        setcookie('kkk', serialize($kkk));
-        // while ($row = $issue->fetch()) {
-        //     $o = array();
-        //     $o = 
-        //     $flag=$flag.$row['username']." - ". $hashed_password == $row['password'].'<br>';
-        //     if($_POST['username'] == $row['username'] && $hashed_password == $row['password']) {
-        //         $loggined = true;
-        //         break;
-        //     }
-        // }
+        // $kkk = $issue->fetchAll();
+        // setcookie('kkk', serialize($kkk));
+        while ($row = $issue->fetch()) {
+            $r = array();
+            $r['username'] = $row['username'];
+            $r['password'] = $row['password'];
+            $flag = $flag . $r['username']." - ". $hashed_password == $r['password'].'<br>';
+            if($_POST['username'] == $r['username'] && $hashed_password == $r['password']) {
+                $loggined = true;
+                break;
+            }
+        }
     } catch (PDOException $e) {
         setcookie('DBERROR', 'Error2 : ' . $e->getMessage());
     }

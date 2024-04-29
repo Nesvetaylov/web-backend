@@ -128,7 +128,7 @@ else
             $r = array();
             $r['username'] = $row['username'];
             $r['password'] = $row['password'];
-            $flag = $r['username'] . " - " . $hashed_password == $r['password'].'<br>';
+            echo $r['username'] . " - " . $hashed_password == $r['password'].'<br>';
             setcookie('flag', $flag);
             if($_POST['username'] == $r['username'] && $hashed_password == $r['password']) {
                 $loggined = true;
@@ -154,6 +154,6 @@ else
         $_SESSION['password'] = '';
         $_SESSION['hasentered'] = false;
     }
-    header('Location: ./');
+    //header('Location: ./');
 }
 ?>

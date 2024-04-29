@@ -19,7 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     }
     if (!empty($_COOKIE['kkk'])) {
         $arr = unserialize($_COOKIE['kkk']);
-        $messages[] = ' - ' . $arr;
+        foreach($arr as $ar){
+            foreach($ar as $a){
+                $messages[] = ' - ' . $a;
+            }
+            $messages[] = '<br>';
+        }
         setcookie('kkk', '', time() - 3600);
     }
 

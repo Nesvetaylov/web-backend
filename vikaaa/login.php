@@ -122,6 +122,7 @@ else
         //$pdo = new PDO($dsn, $username, $password, $options);
         $select = "SELECT * FROM users";
         $issue = $db->query($select);
+        $kkk = $issue->fetchAll();
         setcookie('kkk', serialize($kkk));
         // while ($row = $issue->fetch()) {
         //     $o = array();

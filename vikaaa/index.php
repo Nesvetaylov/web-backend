@@ -20,10 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     if (!empty($_COOKIE['kkk'])) {
         $arr = unserialize($_COOKIE['kkk']);
         foreach($arr as $ar){
-            foreach($ar as $a){
-                $messages[] = ' - ' . $a;
-            }
-            $messages[] = '<br>';
+            $r = array();
+            $r['username'] = $ar['username'];
+            $r['password'] = $ar['password'];
+            $messages[] = $r['username'] . " | " . $r['password'] . '<br>';
         }
         setcookie('kkk', '', time() - 3600);
     }

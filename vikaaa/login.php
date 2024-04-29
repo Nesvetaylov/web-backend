@@ -130,7 +130,7 @@ else
         $select = "SELECT * FROM users";
         $issue = $db->query($select);
         while ($row = $issue->fetch()){
-            echo "selected " . $row . "<br>";
+            echo "selected " . $row['username'] . " | " . $_POST['username'] . "<br>" . $row['password'] . " | " . $_POST['password'] . "<br>";
         }
         // while ($row = $issue->fetch()) {
         //     $r = array();

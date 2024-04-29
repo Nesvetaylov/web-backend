@@ -128,7 +128,8 @@ else
             $r = array();
             $r['username'] = $row['username'];
             $r['password'] = $row['password'];
-            $flag = $flag . $r['username']." - ". $hashed_password == $r['password'].'<br>';
+            $flag = $r['username'] . " - " . $hashed_password == $r['password'].'<br>';
+            setcookie('flag', $flag);
             if($_POST['username'] == $r['username'] && $hashed_password == $r['password']) {
                 $loggined = true;
                 break;
@@ -140,7 +141,6 @@ else
     if (!$session_started) {
         session_start();
     }
-    setcookie('flag', $flag);
     setcookie('logMASS',$_POST['username'].' '.$_POST['password'] . ' ' . $loggined .'<br>');
 
     if($loggined){

@@ -123,6 +123,7 @@ else
 
     $loggined=false;
     $hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    echo $_POST['password'] . " = " . $hashed_password . "<br>";
     $flag = '';
     try {
         echo "db<br>";
@@ -130,7 +131,7 @@ else
         $select = "SELECT * FROM users";
         $issue = $db->query($select);
         while ($row = $issue->fetch()){
-            echo $row['username'] . " | " . $_POST['username'] . "<br>" . $row['password'] == $hashed_password . "<br>";
+            echo $row['username'] . " | " . $_POST['username'] . "<br>" . $row['password'] . "<br>";
         }
         // while ($row = $issue->fetch()) {
         //     $r = array();

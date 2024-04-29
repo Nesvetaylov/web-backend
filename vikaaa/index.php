@@ -221,6 +221,7 @@ else {
         // кроме логина и пароля.
     }
     else {
+        // ААААААААААААААААААААААААААААААААААААААА
         $login = generateUsername();
         $pass = rand();
         $hashed_password = password_hash($pass, PASSWORD_DEFAULT);
@@ -234,10 +235,9 @@ else {
         try {
             $conn = new PDO("mysql:host=localhost;dbname=$dbname", $username, $password);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Connected successfully ";
 
             // Вставка данных в базу
-            $sql = "INSERT INTO Logins (login, password) VALUES (:username, :password)";
+            $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
             $stmt = $conn->prepare($sql);
             $stmt->execute(['username' => $login, 'password' => $hashed_password]);
 

@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
 
     $started_session = session_start();
-    $messages[] = '1:'.!empty($_COOKIE[session_name()]) .'<br> 2: '. $started_session .'<br> 3: '. !empty($_SESSION['hasentered']).'<br> ';
+    $messages[] = 'has entered: '. !empty($_SESSION['hasentered']).'<br> ';
 
     if (!empty($_COOKIE[session_name()]) &&
         $started_session && !empty($_SESSION['hasentered'])) {

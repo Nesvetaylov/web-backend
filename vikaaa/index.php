@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         setcookie('flag', '', time() - 3600);
     }
     if (!empty($_COOKIE['kkk'])) {
-        $messages[] = 'how? '.unserialize($_COOKIE['kkk']);
+        $messages[] = 'how? '. unserialize($_COOKIE['kkk']);
         setcookie('kkk', '', time() - 3600);
     }
 
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $messages[] = 'Спасибо, результаты сохранены.';
         if (!empty($_COOKIE['pass'])) {
             $messages[] = sprintf('Вы можете <a href="login.php?log=%s&pas=%s"> войти </a> с логином <strong>%s</strong>
-        и паролем <strong>%s</strong> для изменения данных.',
+        и паролем <strong>%s</strong> для изменения данных.<br>',
                 strip_tags($_COOKIE['login']),
                 strip_tags($_COOKIE['pass']),
                 strip_tags($_COOKIE['login']),
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
 
     $started_session = session_start();
-    $messages[] = '1:'.!empty($_COOKIE[session_name()]) .'<br> :: '. $started_session .'<br> :: '. !empty($_SESSION['hasentered']).'<br> ';
+    $messages[] = '1:'.!empty($_COOKIE[session_name()]) .'<br> 2: '. $started_session .'<br> 3: '. !empty($_SESSION['hasentered']).'<br> ';
 
     if (!empty($_COOKIE[session_name()]) &&
         $started_session && !empty($_SESSION['hasentered'])) {
@@ -230,7 +230,6 @@ else {
         setcookie('pass', $pass);
 
         $_SESSION['hasentered'] = false;
-
 
         try {
             $conn = new PDO("mysql:host=localhost;dbname=$dbname", $username, $password);

@@ -134,7 +134,7 @@ else
                 break;
             }
         }*/
-    } catch (\PDOException $e) {
+    } catch (PDOException $e) {
         setcookie('DBERROR', 'Error : ' . $e->getMessage());
     }
     if (!$session_started) {

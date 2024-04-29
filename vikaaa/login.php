@@ -122,11 +122,13 @@ else
     $hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $flag = '';
     try {
+        echo "db<br>";
         //$pdo = new PDO($dsn, $username, $password, $options);
         $select = "SELECT * FROM users";
         $issue = $db->query($select);
         // $kkk = $issue->fetchAll();
         // setcookie('kkk', serialize($kkk));
+        echo "selected<br>";
         while ($row = $issue->fetch()) {
             $r = array();
             $r['username'] = $row['username'];
@@ -138,6 +140,7 @@ else
                 break;
             }
         }
+        echo "end<br>"
     } catch (PDOException $e) {
         setcookie('DBERROR', 'Error2 : ' . $e->getMessage());
     }
@@ -145,7 +148,7 @@ else
         session_start();
     }
     setcookie('logMASS',$_POST['username'].' '.$_POST['password'] . ' ' . $loggined .'<br>');
-
+    echo "$loggined<br>";
     if($loggined){
         $_SESSION['login'] = $_POST['username'];
         $_SESSION['password'] = $_POST['password'];

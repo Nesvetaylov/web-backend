@@ -221,8 +221,8 @@ else {
         // ААААААААААААААААААААААААААААААААААААААА
         $login = generateUsername();
         $pass = rand();
-        $hashed_password = password_hash($pass, PASSWORD_DEFAULT);
-
+        //$hashed_password = password_hash($pass, PASSWORD_DEFAULT);
+        $hashed_password = md5($pass);
         // Сохраняем в Cookies.
         setcookie('login', $login);
         setcookie('pass', $pass);
@@ -237,8 +237,6 @@ else {
             $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
             $stmt = $conn->prepare($sql);
             $stmt->execute(['username' => $login, 'password' => $hashed_password]);
-
-
         } catch(PDOException $e) {
             setcookie('DBERROR', 'Error1 : ' . $e->getMessage());
         }

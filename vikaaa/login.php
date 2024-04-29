@@ -122,7 +122,8 @@ else
     
 
     $loggined=false;
-    $hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    //$hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $hashed_password = md5($_POST['password']);
     echo $_POST['password'] . " = " . $hashed_password . "<br>";
     $flag = '';
     try {

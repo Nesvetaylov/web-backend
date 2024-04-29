@@ -58,7 +58,7 @@ else {
     }
   }
   catch(PDOException $e){
-    setcookie('DBERROR', 'Error : ' . $e->getMessage());
+    setcookie('DBERROR', 'Error : ' . $e->getMessage ());
     exit();
   }
   // Выдать сообщение об ошибках.

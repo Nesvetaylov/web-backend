@@ -129,20 +129,20 @@ else
         //$pdo = new PDO($dsn, $username, $password, $options);
         $select = "SELECT * FROM users";
         $issue = $db->query($select);
-        // $kkk = $issue->fetchAll();
-        // setcookie('kkk', serialize($kkk));
-        echo "selected " . $issue->fetchAll() . "<br>";
-        while ($row = $issue->fetch()) {
-            $r = array();
-            $r['username'] = $row['username'];
-            $r['password'] = $row['password'];
-            echo $r['username'] . " - " . $hashed_password == $r['password'].'<br>';
-            setcookie('flag', $flag);
-            if($_POST['username'] == $r['username'] && $hashed_password == $r['password']) {
-                $loggined = true;
-                break;
-            }
+        while ($row = $issue->fetch()){
+            echo "selected " . $row . "<br>";
         }
+        // while ($row = $issue->fetch()) {
+        //     $r = array();
+        //     $r['username'] = $row['username'];
+        //     $r['password'] = $row['password'];
+        //     echo $r['username'] . " - " . $hashed_password == $r['password'].'<br>';
+        //     setcookie('flag', $flag);
+        //     if($_POST['username'] == $r['username'] && $hashed_password == $r['password']) {
+        //         $loggined = true;
+        //         break;
+        //     }
+        // }
         echo "end<br>";
     } catch (PDOException $e) {
         setcookie('DBERROR', 'Error2 : ' . $e->getMessage());

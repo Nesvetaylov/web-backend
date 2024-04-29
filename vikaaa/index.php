@@ -17,16 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $messages[] = 'a? '.$_COOKIE['flag'];
         setcookie('flag', '', time() - 3600);
     }
-    if (!empty($_COOKIE['kkk'])) {
-        $arr = unserialize($_COOKIE['kkk']);
-        foreach($arr as $ar){
-            $r = array();
-            $r['username'] = $ar['username'];
-            $r['password'] = $ar['password'];
-            $messages[] = $r['username'] . " | " . $r['password'] . '<br>';
-        }
-        setcookie('kkk', '', time() - 3600);
-    }
 
     if (!empty($_COOKIE['save'])) {
         $messages[] = 'Спасибо, результаты сохранены.';

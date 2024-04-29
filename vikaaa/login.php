@@ -125,7 +125,6 @@ else
     //$hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $hashed_password = md5($_POST['password']);
     echo $_POST['password'] . " = " . $hashed_password . "<br>";
-    $flag = '';
     try {
         echo "db<br>";
         //$pdo = new PDO($dsn, $username, $password, $options);
@@ -134,18 +133,11 @@ else
         while ($row = $issue->fetch()){
             echo "user: " . $row['username'] . " | " . $_POST['username'] . "<br>";
             echo "pass: "  . strcmp($row['password'], $hashed_password) . "<br>";
+            if($_POST['username'] == $row['username'] && $hashed_password == $row['password']) {
+                $loggined = true;
+                break;
+            }
         }
-        // while ($row = $issue->fetch()) {
-        //     $r = array();
-        //     $r['username'] = $row['username'];
-        //     $r['password'] = $row['password'];
-        //     echo $r['username'] . " - " . $hashed_password == $r['password'].'<br>';
-        //     setcookie('flag', $flag);
-        //     if($_POST['username'] == $r['username'] && $hashed_password == $r['password']) {
-        //         $loggined = true;
-        //         break;
-        //     }
-        // }
         echo "end<br>";
     } catch (PDOException $e) {
         setcookie('DBERROR', 'Error2 : ' . $e->getMessage());
@@ -153,19 +145,18 @@ else
     if (!$session_started) {
         session_start();
     }
-    setcookie('logMASS',$_POST['username'].' '.$_POST['password'] . ' ' . $loggined .'<br>');
+    setcookie('logMASS',$_POST['username'].' '.$_POST['password'] . ' isLogged: ' . $loggined .'<br>');
     echo "$loggined<br>";
     if($loggined){
         $_SESSION['login'] = $_POST['username'];
         $_SESSION['password'] = $_POST['password'];
         $_SESSION['hasentered'] = true;
-
     }
     else{
         $_SESSION['login'] = '';
         $_SESSION['password'] = '';
         $_SESSION['hasentered'] = false;
     }
-    //header('Location: ./');
+    header('Location: ./');
 }
 ?>

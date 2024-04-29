@@ -241,31 +241,11 @@ else {
             $stmt = $conn->prepare($sql);
             $stmt->execute(['username' => $login, 'password' => $hashed_password]);
 
-
-
-            // $sql = "INSERT INTO request_users (login, fio, phone, email, birthdate, gender, bio) VALUES ('$login','$fio', '$phone', '$email', '$birthdate', '$gender', '$bio')";
-            // $stmt = $conn->prepare($sql);
-            // $stmt->execute();
-            // $lastId = $conn->lastInsertId();
-
-
-            // for ($i = 0; $i < count($langs); $i++) {
-            //     $sql = "SELECT id_lang FROM Program_language WHERE name_lang = :langName";
-            //     $stmt = $conn->prepare($sql);
-            //     $stmt->bindParam(':langName', $langs[$i]);
-            //     $stmt->execute();
-            //     $result = $stmt->fetch();
-            //     $lang_id = $result['id_lang'];
-            //     $sql = "INSERT INTO feedback (id, id_lang) VALUES ($lastId, $lang_id)";
-            //     $stmt = $conn->prepare($sql);
-            //     $stmt->execute();
-            // }
             echo nl2br("\nNew record created successfully");
         } catch(PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
+            setcookie('DBERROR', 'Error1 : ' . $e->getMessage());
         }
     }
-
     setcookie('save', '1');
 
     // Делаем перенаправление.

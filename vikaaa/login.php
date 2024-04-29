@@ -131,7 +131,7 @@ else
         $issue = $db->query($select);
         // $kkk = $issue->fetchAll();
         // setcookie('kkk', serialize($kkk));
-        echo "selected $row<br>";
+        echo "selected $issue<br>";
         while ($row = $issue->fetch()) {
             $r = array();
             $r['username'] = $row['username'];

@@ -208,11 +208,11 @@ else {
     }
 
 
-    include('../impotent.php');
+    include('../SecretData.php');
     $servername = "localhost";
-    $username = username;
-    $password = password;
-    $dbname = username;
+    $username = user;
+    $password = pass;
+    $dbname = user;
 
 
     if (!empty($_COOKIE[session_name()]) &&
@@ -238,29 +238,29 @@ else {
             echo "Connected successfully ";
 
             // Вставка данных в базу
-            $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
+            $sql = "INSERT INTO Logins (login, password) VALUES (:username, :password)";
             $stmt = $conn->prepare($sql);
             $stmt->execute(['username' => $login, 'password' => $hashed_password]);
 
 
 
-            $sql = "INSERT INTO request_users (login, fio, phone, email, birthdate, gender, bio) VALUES ('$login','$fio', '$phone', '$email', '$birthdate', '$gender', '$bio')";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $lastId = $conn->lastInsertId();
+            // $sql = "INSERT INTO request_users (login, fio, phone, email, birthdate, gender, bio) VALUES ('$login','$fio', '$phone', '$email', '$birthdate', '$gender', '$bio')";
+            // $stmt = $conn->prepare($sql);
+            // $stmt->execute();
+            // $lastId = $conn->lastInsertId();
 
 
-            for ($i = 0; $i < count($langs); $i++) {
-                $sql = "SELECT id_lang FROM Program_language WHERE name_lang = :langName";
-                $stmt = $conn->prepare($sql);
-                $stmt->bindParam(':langName', $langs[$i]);
-                $stmt->execute();
-                $result = $stmt->fetch();
-                $lang_id = $result['id_lang'];
-                $sql = "INSERT INTO feedback (id, id_lang) VALUES ($lastId, $lang_id)";
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-            }
+            // for ($i = 0; $i < count($langs); $i++) {
+            //     $sql = "SELECT id_lang FROM Program_language WHERE name_lang = :langName";
+            //     $stmt = $conn->prepare($sql);
+            //     $stmt->bindParam(':langName', $langs[$i]);
+            //     $stmt->execute();
+            //     $result = $stmt->fetch();
+            //     $lang_id = $result['id_lang'];
+            //     $sql = "INSERT INTO feedback (id, id_lang) VALUES ($lastId, $lang_id)";
+            //     $stmt = $conn->prepare($sql);
+            //     $stmt->execute();
+            // }
             echo nl2br("\nNew record created successfully");
         } catch(PDOException $e) {
             echo "Connection failed: " . $e->getMessage();

@@ -107,11 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 }
 else
 {
-    include('../impotent.php');
+    include('../SecretData.php');
     $servername = "localhost";
-    $username = username;
-    $password = password;
-    $dbname = username;
+    $username = user;
+    $password = pass;
+    $dbname = user;
 
     $db = new PDO("mysql:host=localhost;dbname=$dbname", $username, $password,
         [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
@@ -122,13 +122,9 @@ else
     $flag = '';
     try {
         //$pdo = new PDO($dsn, $username, $password, $options);
-        $pr = "SELECT * FROM users";
-        $issue = $db->query($pr);
-        if (!$session_started) {
-            session_start();
-        }
-
-        $kkk = $issue->fetchall();
+        $select = "SELECT * FROM Logins";
+        $issue = $db->query($select);
+        $kkk = $issue->fetchAll();
         setcookie('kkk', serialize($kkk));
         /*while ($row = $issue->fetch()) {
             $flag=$flag.$row['username']." - ". $hashed_password == $row['password'].'<br>';
@@ -140,6 +136,9 @@ else
         }*/
     } catch (\PDOException $e) {
         setcookie('DBERROR', 'Error : ' . $e->getMessage());
+    }
+    if (!$session_started) {
+        session_start();
     }
     setcookie('flag', $flag);
     setcookie('logMASS',$_POST['username'].' '.$_POST['password'] . ' ' . $loggined .'<br>');
@@ -155,12 +154,6 @@ else
         $_SESSION['password'] = '';
         $_SESSION['hasentered'] = false;
     }
-
-
-
-
-
-
-header('Location: ./');
+    header('Location: ./');
 }
 ?>

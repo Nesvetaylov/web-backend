@@ -21,14 +21,15 @@ if ($_COOKIE[session_name()] && session_start()) {
     }
 }
 
-echo " Логин: " . $_GET['log'];
-echo " Пароль: " . $_GET['pas'];
-echo " Новый пользователь успешно добавлен.";
+// echo " Логин: " . $_GET['log'];
+// echo " Пароль: " . $_GET['pas'];
+echo " Новый пользователь успешно добавлен.<br>";
 
 //$hashed_password = password_hash($_GET['pas'], PASSWORD_DEFAULT);
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    echo 'запрос get<br>';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -105,6 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 }
 else
 {
+    echo 'запрос post<br>';
+
     include('../SecretData.php');
     $servername = "localhost";
     $username = user;

@@ -13,6 +13,7 @@
 <body>
 
 <?php
+header('Cache-Control: no-cache, must-revalidate');
 if (!empty($messages)) {
     print('<div id="messages">');
     // Выводим все сообщения.

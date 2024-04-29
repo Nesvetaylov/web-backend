@@ -1,6 +1,12 @@
 
 <?php
 
+header('Cache-Control: no-cache, must-revalidate');
+// Включение отображения ошибок для отладки
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $session_started = false;
 if ($_COOKIE[session_name()] && session_start()) {
     $session_started = true;
@@ -14,14 +20,6 @@ if ($_COOKIE[session_name()] && session_start()) {
         exit();
     }
 }
-// Включение отображения ошибок для отладки
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Подключение к базе данных с использованием PDO
-
-
 
 echo "Логин:" . $_GET['log'];
 echo "Пароль:" . $_GET['pas'];

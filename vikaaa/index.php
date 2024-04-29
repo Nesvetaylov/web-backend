@@ -1,6 +1,7 @@
 <?php
 
 header('Content-Type: text/html; charset=UTF-8');
+header('Cache-Control: no-cache, must-revalidate');
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $messages = array();
@@ -241,7 +242,7 @@ else {
             $stmt = $conn->prepare($sql);
             $stmt->execute(['username' => $login, 'password' => $hashed_password]);
 
-            echo nl2br("\nNew record created successfully");
+
         } catch(PDOException $e) {
             setcookie('DBERROR', 'Error1 : ' . $e->getMessage());
         }

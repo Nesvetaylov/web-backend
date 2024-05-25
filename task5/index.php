@@ -2,7 +2,11 @@
 header('Content-Type: text/html; charset=UTF-8');
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+  session_set_cookie_params(time() + 24 * 60 * 60);
   $isStarted = session_start();
+  if($isStarted && !empty($_COOKIE[session_name()])) {
+    session_regenerate_id();
+  }
 
   $messages = array();   // Массив для временного хранения сообщений пользователю.
   // Выдаем сообщения о различных ошибках
@@ -155,51 +159,46 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST")
   if (empty($_POST['fio'])) {
     setcookie('fio_error', '1', time() + 24 * 60 * 60); // Выдаем куку на день с флажком об ошибке в поле fio.
     $errors = TRUE;
-  }
-  else {
-    setcookie('fio_value', $_POST['fio'], time() + 30 * 24 * 60 * 60); // Сохраняем ранее введенное в форму значение на месяц.
+  } else {
+    setcookie('fio_value', htmlspecialchars($_POST['fio']), time() + 30 * 24 * 60 * 60); // Сохраняем ранее введенное в форму значение на месяц с экранированием HTML-символов.
   }
   // phone
-  if (empty($_POST['phone']) || !preg_match('/^[0-9+]+$/', $_POST['phone'])) {
+  if (empty($_POST['phone']) || !preg_match('/^(\+\d{11})$/', $_POST['phone'])) {
     setcookie('phone_error', '1', time() + 24 * 60 * 60);
     $errors = TRUE;
-  }
-  else {
-    setcookie('phone_value', $_POST['phone'], time() + 30 * 24 * 60 * 60);
+  } else {
+    setcookie('phone_value', htmlspecialchars($_POST['phone']), time() + 30 * 24 * 60 * 60); // Сохраняем значение с экранированием HTML-символов.
   }
   // email
   if (empty($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
     setcookie('email_error', '1', time() + 24 * 60 * 60);
     $errors = TRUE;
-  }
-  else {
-    setcookie('email_value', $_POST['email'], time() + 30 * 24 * 60 * 60);
+  } else {
+    setcookie('email_value', htmlspecialchars($_POST['email']), time() + 30 * 24 * 60 * 60); // Сохраняем значение с экранированием HTML-символов.
   }
   // birthdate
-  if (empty($_POST['birthdate'])) {
+  if (empty($_POST['birthdate']) || !preg_match('/^\d{4}\-\d{2}\-\d{2}$/', $_POST['birthdate'])) {
     setcookie('birthdate_error', '1', time() + 24 * 60 * 60);
     $errors = TRUE;
-  }
-  else {
-    setcookie('birthdate_value', $_POST['birthdate'], time() + 30 * 24 * 60 * 60);
+  } else {
+    setcookie('birthdate_value', htmlspecialchars($_POST['birthdate']), time() + 30 * 24 * 60 * 60); // Сохраняем значение с экранированием HTML-символов.
   }
   // gender
   $genderCheck = $_POST['gender'] == "male" || $_POST['gender'] == "female";
   if (empty($_POST['gender']) || !$genderCheck) {
     setcookie('gender_error', '1', time() + 24 * 60 * 60);
     $errors = TRUE;
-  }
-  else {
-    setcookie('gender_value', $_POST['gender'], time() + 30 * 24 * 60 * 60);
+  } else {
+    setcookie('gender_value', htmlspecialchars($_POST['gender']), time() + 30 * 24 * 60 * 60); // Сохраняем значение с экранированием HTML-символов.
   }
   // biography
   if (empty($_POST['biography'])) {
     setcookie('biography_error', '1', time() + 24 * 60 * 60); 
     $errors = TRUE;
+  } else {
+    setcookie('biography_value', htmlspecialchars($_POST['biography']), time() + 30 * 24 * 60 * 60); // Сохраняем значение с экранированием HTML-символов.
   }
-  else {
-    setcookie('biography_value', $_POST['biography'], time() + 30 * 24 * 60 * 60);
-  }
+
   // selections
   if (empty($_POST['selections'])) {
     setcookie('selections_error', '1', time() + 24 * 60 * 60);

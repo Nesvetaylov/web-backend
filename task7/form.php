@@ -56,9 +56,9 @@
         <strong>
           Введите вашу почту:
         </strong>
-        <input name="mail" type="email" 
-          <?php if ($errors['mail']) {print 'class="error"';} ?>
-          value="<?php print $values['mail']; ?>"        
+        <input name="email" type="email" 
+          <?php if ($errors['email']) {print 'class="error"';} ?>
+          value="<?php print $values['email']; ?>"        
           placeholder="email" />
       </label>
       <br>
@@ -77,16 +77,12 @@
         Пол:
       </strong>
       <label>
-        <input type="radio" name="pol" required value="1" <?php if ($values['pol']==='1') {print 'checked';}?> >
+        <input type="radio" name="gender" required value="1" <?php if ($values['gender']==='1') {print 'checked';}?> >
         Мужской
       </label>
       <label>
-        <input type="radio" name="pol" required value="2"  <?php if ($values['pol']==='2') {print 'checked';}?>  >
+        <input type="radio" name="gender" required value="2"  <?php if ($values['gender']==='2') {print 'checked';}?>  >
         Женский
-      </label>
-      <label>
-        <input type="radio" name="pol" required value="3" <?php if ($values['pol']==='3') {print 'checked';}?> >
-        Ламинат
       </label>
       <br>
 
@@ -115,7 +111,7 @@
         <strong>
           Биография:
         </strong>
-        <textarea name="biog" <?php if ($errors['biog']) {print 'class="error"';} ?> placeholder="Я ждал 12 лет в Азкабане.."><?php print $values['biog']; ?>
+        <textarea name="biografy" <?php if ($errors['biografy']) {print 'class="error"';} ?> placeholder="Я ждал 12 лет в Азкабане.."><?php print $values['biografy']; ?>
         </textarea>
       </label>
 
